@@ -1,20 +1,21 @@
-import numpy as np
+import time
+import IPython.display
+from io import BytesIO
+import PIL.Image
+from utils.geometry_util import dist_point_linestring
 import copy
 import cv2
-import sys
-from track import Track
-from vehicle import Vehicle
-
-sys.path.append("../util")
-from geometry_util import dist_point_linestring
 import matplotlib.pyplot as plt
+import numpy as np
+import sys
+# from track import Track
+# from vehicle import Vehicle
 
-import PIL.Image
-from io import BytesIO
-import IPython.display
-import time
+sys.path.append('../')
+
 
 # helper functions
+
 def resize(img, scale_percent):
     scale_percent = 60  # percent of original size
     width = int(img.shape[1] * scale_percent / 100)

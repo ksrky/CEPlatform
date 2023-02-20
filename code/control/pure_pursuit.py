@@ -7,14 +7,12 @@ param_K_dd = 0.4
 class PurePursuit:
     """
     Pure pursuit algorithm
-    waypoints: x
     K_dd: Look ahead distance = K_dd * velocity
     wheal_base: x
     waypoint_shift: x
     """
 
-    def __init__(self, waypoints, K_dd=param_K_dd, wheel_base=2.65, waypoint_shift=1.4):
-        self.waypoints = waypoints
+    def __init__(self, K_dd=param_K_dd, wheel_base=2.65, waypoint_shift=1.4):
         self.K_dd = K_dd
         self.wheel_base = wheel_base
         self.waypoint_shift = waypoint_shift
@@ -42,19 +40,19 @@ class PurePursuit:
             else:
                 return intersections
 
-    def get_target_point(self, look_ahead_distance):
+    def get_target_point(self, look_ahead_distance, waypoints):
         intersections = []
-        for j in range(len(self.waypoints)-1):
-            pt1 = self.waypoints[j]
-            pt2 = self.waypoints[j+1]
+        for j in range(len(waypoints)-1):
+            pt1 = waypoints[j]
+            pt2 = waypoints[j+1]
             intersections += self.circle_line_segment_intersection((0, 0), look_ahead_distance, pt1, pt2, full_line=False)
         filtered = [pt for pt in intersections if pt[0] > 0]
         if len(filtered) == 0:
             return None
         return filtered[0]
 
-    def get_control(self, speed):
-        self.waypoints[:, 0] += self.waypoint_shift
+    def get_control(self, waypoints, speed):
+        waypoints[:, 0] += self.waypoint_shift
         look_ahead_distance = np.clip(self.K_dd * speed, 3, 20)
 
         track_point = self.get_target_point(look_ahead_distance)
@@ -65,4 +63,4 @@ class PurePursuit:
 
         steer = np.arctan((2 * self.wheel_base * np.sin(alpha)) / look_ahead_distance)
 
-        self.waypoints[:, 0] -= self.waypoint_shift
+        waypoints[:, 0] -= self.waypoint_shift
