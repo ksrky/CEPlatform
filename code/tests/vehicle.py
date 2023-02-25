@@ -6,7 +6,7 @@ def get_heading(theta):
 
 
 class Vehicle:
-    def __init__(self, x, y, velocity, heading, wheel_base):
+    def __init__(self, x=0, y=0, velocity=0, heading=0, wheel_base=2):
         self.x = x
         self.y = y
         self.velocity = velocity

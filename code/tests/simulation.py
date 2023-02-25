@@ -1,3 +1,4 @@
+import os
 import time
 import IPython.display
 from io import BytesIO
@@ -11,7 +12,7 @@ import sys
 # from track import Track
 # from vehicle import Vehicle
 
-sys.path.append('../')
+sys.path.append('../../')
 
 
 # helper functions
@@ -108,7 +109,7 @@ class Simulation:
             ]
         )
         self.a, self.delta = 0, 0
-        image_fn = "../../../data/carla_vehicle_bg_2.png"
+        image_fn = "../../data/carla_vehicle_bg_2.png"
         image_vehicle = cv2.imread(image_fn)
         self.image_vehicle = cv2.cvtColor(image_vehicle, cv2.COLOR_BGR2RGB)
 
@@ -120,15 +121,18 @@ class Simulation:
             self.vehicle.x, self.vehicle.y, self.vehicle.theta
         )
         self.a, self.delta = self.controller.get_control(
-            self.waypoints, self.vehicle.v, self.desired_velocity, self.dt
+            waypoints=self.waypoints,
+            velocity=self.vehicle.velocity,
+            desired_velocity=self.desired_velocity,
+            dt=self.dt
         )
         self.a = np.clip(self.a, 0, 3)
         self.vehicle.update(self.dt, self.delta, self.a)
-        self.traj.append([self.vehicle.x, self.vehicle.y])
+        self.traj.append([self.vehicle.x, self.vehicle.y, self.delta])
         self.cross_track_errors.append(
             dist_point_linestring(np.array([0, 0]), self.waypoints)
         )
-        self.velocities.append(self.vehicle.v)
+        self.velocities.append(self.vehicle.velocity)
 
     def plot_error(self):
         plt.plot(self.cross_track_errors)
@@ -191,7 +195,7 @@ class Simulation:
         # render text
         cte = self.cross_track_errors[-1]
         mystring = "cross track error = {:.2f}m, velocity={:.2f}m/s".format(
-            cte, self.vehicle.v
+            cte, self.vehicle.velocity
         )
 
         font = cv2.FONT_HERSHEY_SIMPLEX

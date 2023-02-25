@@ -1,10 +1,11 @@
-import math
 import numpy as np
+
+from controller import Controller
 
 param_K_dd = 0.4
 
 
-class PurePursuit:
+class PurePursuit(Controller):
     """
     Pure pursuit algorithm
     K_dd: Look ahead distance = K_dd * velocity
@@ -17,7 +18,7 @@ class PurePursuit:
         self.wheel_base = wheel_base
         self.waypoint_shift = waypoint_shift
 
-    def circle_line_segment_intersection(circle_center, circle_radius, pt1, pt2, full_line=True, tangent_tol=1e-9):
+    def circle_line_segment_intersection(self, circle_center, circle_radius, pt1, pt2, full_line=True, tangent_tol=1e-9):
         (p1x, p1y), (p2x, p2y), (cx, cy) = pt1, pt2, circle_center
         (x1, y1), (x2, y2) = (p1x - cx, p1y - cy), (p2x - cx, p2y - cy)
         dx, dy = (x2 - x1), (y2 - y1)
@@ -40,22 +41,25 @@ class PurePursuit:
             else:
                 return intersections
 
-    def get_target_point(self, look_ahead_distance, waypoints):
+    def get_target_point(self, lookahead, waypoints):
         intersections = []
         for j in range(len(waypoints)-1):
             pt1 = waypoints[j]
             pt2 = waypoints[j+1]
-            intersections += self.circle_line_segment_intersection((0, 0), look_ahead_distance, pt1, pt2, full_line=False)
+            intersections += self.circle_line_segment_intersection((0, 0), lookahead, pt1, pt2, full_line=False)
         filtered = [pt for pt in intersections if pt[0] > 0]
         if len(filtered) == 0:
             return None
         return filtered[0]
 
-    def get_control(self, waypoints, speed):
+    def calculate(self, **kwargs):
+        waypoints = kwargs['waypoints']
+        speed = kwargs['velocity']
+
         waypoints[:, 0] += self.waypoint_shift
         look_ahead_distance = np.clip(self.K_dd * speed, 3, 20)
 
-        track_point = self.get_target_point(look_ahead_distance)
+        track_point = self.get_target_point(look_ahead_distance, waypoints)
         if track_point is None:
             return 0
 
@@ -64,3 +68,10 @@ class PurePursuit:
         steer = np.arctan((2 * self.wheel_base * np.sin(alpha)) / look_ahead_distance)
 
         waypoints[:, 0] -= self.waypoint_shift
+        return {'steer': steer}
+
+    def get_control(self, **kwargs):
+        result = self.calculate(**kwargs)
+        acc = result.get('acc', 0)
+        steer = result.get('steer', 0)
+        return acc, steer

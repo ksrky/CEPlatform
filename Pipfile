@@ -9,6 +9,7 @@ numpy = "*"
 opencv-python = "*"
 pyclothoids = "*"
 ipywidgets = "*"
+imageio = "*"
 
 [dev-packages]
 ipykernel = "*"
