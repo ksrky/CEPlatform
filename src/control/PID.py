@@ -8,7 +8,9 @@ class PID:
         self.derivative_term = 0
         self.last_error = None
 
-    def get_control(self, measurement, dt):
+    def get_control(self, **kwargs):
+        measurement = kwargs['measurement']
+        dt = kwargs['dt']
         error = self.set_point - measurement
         self.int_term += error * self.Ki * dt
         if self.last_error is not None:

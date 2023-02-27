@@ -47,15 +47,17 @@ class PurePursuit:
     waypoint_shift: x
     """
 
-    def __init__(self, K_dd=param_K_dd, wheel_base=2.65, waypoint_shift=1.4):
-        self.K_dd = K_dd
+    def __init__(self, Kdd=param_K_dd, wheel_base=2.65, waypoint_shift=1.4):
+        self.Kdd = Kdd
         self.wheel_base = wheel_base
         self.waypoint_shift = waypoint_shift
 
-    def get_control(self, waypoints, velocity):
+    def get_control(self, **kwargs):
+        waypoints = kwargs['waypoints']
+        velocity = kwargs['velocity']
 
         waypoints[:, 0] += self.waypoint_shift
-        look_ahead_distance = np.clip(self.K_dd * velocity, 3, 20)
+        look_ahead_distance = np.clip(self.Kdd * velocity, 3, 20)
 
         track_point = get_target_point(look_ahead_distance, waypoints)
         if track_point is None:
