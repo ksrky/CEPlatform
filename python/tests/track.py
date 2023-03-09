@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import matplotlib.pyplot as plt
 from track_generator import get_random_racetrack
 
@@ -8,6 +9,7 @@ class Track:
     waypoints
     obj: marker
     """
+
     def __init__(self, seed=42):
         np.random.seed(seed)
         x, y = get_random_racetrack()
@@ -56,8 +58,7 @@ class Track:
 
     def plot(self, color="red"):
         plt.plot(self.waypoints[:, 0], self.waypoints[:, 1], color=color)
-        plt.scatter(self.obj[:, 0], self.obj[:, 1], color=color)
-
+        plt.scatter(self.obj[:, 0], self.obj[:, 1], color=color, s=5)
 
 if __name__ == "__main__":
     track = Track()

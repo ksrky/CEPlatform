@@ -115,7 +115,7 @@ class Simulation:
             self.vehicle.x, self.vehicle.y, self.vehicle.heading
         )
         self.delta = self.handle_controller.get_control(
-            waypoints=self.waypoints, velocity=self.vehicle.velocity
+            waypoints=self.waypoints, velocity=self.vehicle.velocity, heading=self.vehicle.heading, dt=self.dt
         )
         self.a = self.pedal_controller.get_control(
             measurement=self.vehicle.velocity, set_point=self.desired_velocity, dt=self.dt

@@ -18,4 +18,5 @@ class Vehicle:
         self.y += self.velocity * np.sin(self.heading) * dt
         ang_vel = self.velocity * np.tan(delta) / self.wheel_base
         self.heading = get_heading(self.heading + ang_vel * dt)
+        #acc_eff = acc - self.velocity**2 * 0.001
         self.velocity += acc * dt
