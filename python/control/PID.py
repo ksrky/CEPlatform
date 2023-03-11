@@ -11,8 +11,6 @@ def get_curvature(waypoints):
         if d < mind:
             mind = d
             theta = math.acos((x2 - x1) / ((x2 - x1)**2 + (y2 - y1)**2)**.5)
-            if y2 - y1 < 0:
-                theta = 2 * math.pi - theta
     return theta
 
 
@@ -42,4 +40,5 @@ class PIDHandle(PID):
         waypoints = kwargs['waypoints']
         heading = kwargs['heading']
         theta = get_curvature(waypoints)
-        return super().get_control(measurement=theta-heading, dt=kwargs['dt'])
+        print(theta, heading)
+        return super().get_control(measurement=theta, dt=kwargs['dt'])
