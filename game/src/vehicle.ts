@@ -4,9 +4,8 @@ export class Vehicle {
     /**
      * Vehicle model */
     public scene: BABYLON.Scene
-    public camera: BABYLON.ArcRotateCamera
-    public carBody: BABYLON.Mesh
 
+    public carBody: BABYLON.Mesh
     public wheelFI: BABYLON.Mesh
     public wheelFO: BABYLON.InstancedMesh
     public wheelRI: BABYLON.InstancedMesh
@@ -37,12 +36,12 @@ export class Vehicle {
             new BABYLON.Vector3(0, 0, 4),
         ]
 
-        const carBody = BABYLON.MeshBuilder.ExtrudeShape(
+        this.carBody = BABYLON.MeshBuilder.ExtrudeShape(
             'body',
             { shape: side, path: extrudePath, cap: BABYLON.Mesh.CAP_ALL },
             this.scene
         )
-        carBody.material = bodyMaterial
+        this.carBody.material = bodyMaterial
     }
 
     private _attachWheels(): void {

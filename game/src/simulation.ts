@@ -46,7 +46,11 @@ export class Simulation {
             dir = dir/Math.abs(dir)
             this.vehicle.carBody.rotate(BABYLON.Axis.Y, dir * this._theta, BABYLON.Space.WORLD)
                 
-            i = (i + 1) % (this.n_steps-1)	//continuous looping  
+            i = (i + 1) % (this.n_steps-1)	//continuous looping
+            
+            if(i == 0) {
+                this.vehicle.carBody.rotationQuaternion = this._startRotation
+            }
         })
     }
 }

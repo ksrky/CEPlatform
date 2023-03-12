@@ -9,6 +9,8 @@ export class Path {
     constructor(scene: BABYLON.Scene, n_steps : number) {
         this.scene = scene
         this._n = n_steps
+        this.points = []
+        this._generatePath()
     }
 
     private _generatePath(): void {

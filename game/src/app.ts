@@ -3,7 +3,7 @@ import '@babylonjs/inspector'
 import '@babylonjs/loaders/glTF'
 import * as BABYLON from '@babylonjs/core'
 
-import { Simulation } from './simulation'
+import { Simulation }  from './simulation'
 
 class App {
     constructor() {
@@ -24,23 +24,7 @@ class App {
 
         const sim = new Simulation(scene)
 
-        /*const camera: ArcRotateCamera = new ArcRotateCamera(
-            'Camera',
-            Math.PI / 2,
-            Math.PI / 2,
-            2,
-            Vector3.Zero(),
-            scene
-        )
-        camera.attachControl(canvas, true)*/
-
         const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(1, 0.5, 0), scene)
-        
-        /* const sphere: BABYLON.Mesh = BABYLON.MeshBuilder.CreateSphere(
-            'sphere',
-            { diameter: 1 },
-            scene
-        )*/
 
         // hide/show the Inspector
         window.addEventListener('keydown', (ev) => {
@@ -56,8 +40,8 @@ class App {
 
         // run the main render loop
         engine.runRenderLoop(() => {
-            sim.animate()
             scene.render()
+            sim.animate()
         })
     }
 }
