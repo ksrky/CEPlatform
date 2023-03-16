@@ -15,7 +15,7 @@ export class Simulation {
     private _startRotation : BABYLON.Quaternion
 
     constructor(scene: BABYLON.Scene) {
-        this.n_steps = 50
+        this.n_steps = 200
         this.scene = scene
         this.vehicle = new Vehicle(this.scene)
         this.path = new Path(this.scene, this.n_steps)
@@ -29,17 +29,18 @@ export class Simulation {
         this._theta = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Z, this._normals[0]))
         this.vehicle.body.rotate(BABYLON.Axis.Y, this._theta, BABYLON.Space.WORLD)
         this._startRotation = this.vehicle.body.rotationQuaternion
+        this._animate()
     }
 
-    public animate() : void {
-        let i = 0 
-        this.scene.registerAfterRender(function() {
+    private _animate() : void {
+        let i = 0
+        this.scene.registerAfterRender(() => {
             this.vehicle.body.position.x = this.path.points[i].x
             this.vehicle.body.position.z = this.path.points[i].z
-            this.wheelFI.rotate(this.normals[i], Math.PI/32, BABYLON.Space.WORLD) 
-            this.wheelFO.rotate(this.normals[i], Math.PI/32, BABYLON.Space.WORLD)
-            this.wheelRI.rotate(this.normals[i], Math.PI/32, BABYLON.Space.WORLD)
-            this.wheelRO.rotate(this.normals[i], Math.PI/32, BABYLON.Space.WORLD)
+            this.vehicle.wheelFI.rotate(this._normals[i], Math.PI/32, BABYLON.Space.WORLD) 
+            this.vehicle.wheelFO.rotate(this._normals[i], Math.PI/32, BABYLON.Space.WORLD)
+            this.vehicle.wheelRI.rotate(this._normals[i], Math.PI/32, BABYLON.Space.WORLD)
+            this.vehicle.wheelRO.rotate(this._normals[i], Math.PI/32, BABYLON.Space.WORLD)
         
             this._theta = Math.acos(BABYLON.Vector3.Dot(this._normals[i],this._normals[i+1]))
             let dir = BABYLON.Vector3.Cross(this._normals[i],this._normals[i+1]).y

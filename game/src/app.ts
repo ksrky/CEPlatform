@@ -16,13 +16,13 @@ class App {
 
         // initialize babylon scene and engine
         const engine = new BABYLON.Engine(canvas, true)
-        const scene = new BABYLON.Scene(engine)
+        let scene = new BABYLON.Scene(engine)
 
         const camera = new BABYLON.ArcRotateCamera('camera1',  0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene)
         camera.setPosition(new BABYLON.Vector3(-12, 25, -84))
         camera.attachControl(canvas, true)
 
-        const sim = new Simulation(scene)
+        let sim = new Simulation(scene)
 
         const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(1, 0.5, 0), scene)
 
@@ -37,13 +37,11 @@ class App {
                 }
             }
         })
- 
+
 
         // run the main render loop
         engine.runRenderLoop(() => {
-            console.error(sim.vehicle.body)
             scene.render()
-            sim.animate()
         })
     }
 }
