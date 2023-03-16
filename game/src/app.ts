@@ -37,9 +37,11 @@ class App {
                 }
             }
         })
+ 
 
         // run the main render loop
         engine.runRenderLoop(() => {
+            console.error(sim.vehicle.body)
             scene.render()
             sim.animate()
         })

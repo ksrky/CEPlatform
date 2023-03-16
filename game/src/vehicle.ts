@@ -5,7 +5,7 @@ export class Vehicle {
      * Vehicle model */
     public scene: BABYLON.Scene
 
-    public carBody: BABYLON.Mesh
+    public body: BABYLON.Mesh
     public wheelFI: BABYLON.Mesh
     public wheelFO: BABYLON.InstancedMesh
     public wheelRI: BABYLON.InstancedMesh
@@ -13,11 +13,11 @@ export class Vehicle {
 
     constructor(scene: BABYLON.Scene) {
         this.scene = scene
-        this._makeCarBody()
+        this._makeBody()
         this._attachWheels()
     }
 
-    private _makeCarBody(): void {
+    private _makeBody(): void {
         const bodyMaterial = new BABYLON.StandardMaterial('body_mat', this.scene)
         bodyMaterial.diffuseColor = new BABYLON.Color3(1.0, 0.25, 0.25)
         bodyMaterial.backFaceCulling = false
@@ -36,12 +36,12 @@ export class Vehicle {
             new BABYLON.Vector3(0, 0, 4),
         ]
 
-        this.carBody = BABYLON.MeshBuilder.ExtrudeShape(
+        this.body = BABYLON.MeshBuilder.ExtrudeShape(
             'body',
             { shape: side, path: extrudePath, cap: BABYLON.Mesh.CAP_ALL },
             this.scene
         )
-        this.carBody.material = bodyMaterial
+        this.body.material = bodyMaterial
     }
 
     private _attachWheels(): void {
@@ -92,18 +92,18 @@ export class Vehicle {
         this.wheelFI.material = wheelMaterial
 
         this.wheelFI.rotate(BABYLON.Axis.X, Math.PI / 2, BABYLON.Space.WORLD)
-        this.wheelFI.parent = this.carBody
+        this.wheelFI.parent = this.body
 
         this.wheelFO = this.wheelFI.createInstance('FO')
-        this.wheelFO.parent = this.carBody
+        this.wheelFO.parent = this.body
         this.wheelFO.position = new BABYLON.Vector3(-4.5, -2, 2.8)
 
         this.wheelRI = this.wheelFI.createInstance('RI')
-        this.wheelRI.parent = this.carBody
+        this.wheelRI.parent = this.body
         this.wheelRI.position = new BABYLON.Vector3(2.5, -2, -2.8)
 
         this.wheelRO = this.wheelFI.createInstance('RO')
-        this.wheelRO.parent = this.carBody
+        this.wheelRO.parent = this.body
         this.wheelRO.position = new BABYLON.Vector3(2.5, -2, 2.8)
 
         this.wheelFI.position = new BABYLON.Vector3(-4.5, -2, -2.8)
