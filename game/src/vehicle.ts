@@ -61,22 +61,6 @@ export class Vehicle {
         faceUV[0] = new BABYLON.Vector4(0, 0, 1, 1)
         faceUV[2] = new BABYLON.Vector4(0, 0, 1, 1)
 
-        const wheel = BABYLON.MeshBuilder.CreateCylinder(
-            'wheel',
-            {
-                diameter: 3,
-                height: 1,
-                tessellation: 24,
-                faceColors: faceColors,
-                faceUV: faceUV,
-            },
-            this.scene
-        )
-        wheel.material = wheelMaterial
-
-        //rotate wheel so tread in xz plane
-        wheel.rotation.x = Math.PI / 2
-
         // attaching wheels
         this.wheelFI = BABYLON.MeshBuilder.CreateCylinder(
             'wheelFI',

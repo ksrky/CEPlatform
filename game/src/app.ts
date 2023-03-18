@@ -16,15 +16,16 @@ class App {
 
         // initialize babylon scene and engine
         const engine = new BABYLON.Engine(canvas, true)
-        let scene = new BABYLON.Scene(engine)
+        const scene = new BABYLON.Scene(engine)
 
         const camera = new BABYLON.ArcRotateCamera('camera1',  0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene)
         camera.setPosition(new BABYLON.Vector3(-12, 25, -84))
         camera.attachControl(canvas, true)
 
-        let sim = new Simulation(scene)
+        new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(1, 0.5, 0), scene)
 
-        const light = new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(1, 0.5, 0), scene)
+        // simulation
+        new Simulation(scene)
 
         // hide/show the Inspector
         window.addEventListener('keydown', (ev) => {

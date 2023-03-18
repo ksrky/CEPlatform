@@ -29,10 +29,10 @@ export class Simulation {
         this._theta = Math.acos(BABYLON.Vector3.Dot(BABYLON.Axis.Z, this._normals[0]))
         this.vehicle.body.rotate(BABYLON.Axis.Y, this._theta, BABYLON.Space.WORLD)
         this._startRotation = this.vehicle.body.rotationQuaternion
-        this._animate()
+        this._registerAnimation()
     }
 
-    private _animate() : void {
+    private _registerAnimation() : void {
         let i = 0
         this.scene.registerAfterRender(() => {
             this.vehicle.body.position.x = this.path.points[i].x

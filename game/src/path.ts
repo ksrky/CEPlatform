@@ -4,7 +4,7 @@ export class Path {
     public scene: BABYLON.Scene
     public points: BABYLON.Vector3[]
     private _n = 50 // number of points - more points the slower the car
-    private _r = 50 //radius
+    private _r = 50 // radius
 
     constructor(scene: BABYLON.Scene, n_steps : number) {
         this.scene = scene
