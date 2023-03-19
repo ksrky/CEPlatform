@@ -1,9 +1,11 @@
 import * as BABYLON from '@babylonjs/core'
 
+import { Pos } from '../models/position'
+
 export class Vehicle {
     /**
      * Vehicle model */
-    public scene: BABYLON.Scene
+    private _scene: BABYLON.Scene
 
     public body: BABYLON.Mesh
     public wheelFI: BABYLON.Mesh
@@ -12,13 +14,13 @@ export class Vehicle {
     public wheelRO: BABYLON.InstancedMesh
 
     constructor(scene: BABYLON.Scene) {
-        this.scene = scene
+        this._scene = scene
         this._makeBody()
         this._attachWheels()
     }
 
     private _makeBody(): void {
-        const bodyMaterial = new BABYLON.StandardMaterial('body_mat', this.scene)
+        const bodyMaterial = new BABYLON.StandardMaterial('body_mat', this._scene)
         bodyMaterial.diffuseColor = new BABYLON.Color3(1.0, 0.25, 0.25)
         bodyMaterial.backFaceCulling = false
 
@@ -39,16 +41,16 @@ export class Vehicle {
         this.body = BABYLON.MeshBuilder.ExtrudeShape(
             'body',
             { shape: side, path: extrudePath, cap: BABYLON.Mesh.CAP_ALL },
-            this.scene
+            this._scene
         )
         this.body.material = bodyMaterial
     }
 
     private _attachWheels(): void {
-        const wheelMaterial = new BABYLON.StandardMaterial('wheel_mat', this.scene)
+        const wheelMaterial = new BABYLON.StandardMaterial('wheel_mat', this._scene)
         const wheelTexture = new BABYLON.Texture(
             'http://i.imgur.com/ZUWbT6L.png',
-            this.scene
+            this._scene
         )
         wheelMaterial.diffuseTexture = wheelTexture
 
@@ -71,7 +73,7 @@ export class Vehicle {
                 faceColors: faceColors,
                 faceUV: faceUV,
             },
-            this.scene
+            this._scene
         )
         this.wheelFI.material = wheelMaterial
 
@@ -93,8 +95,14 @@ export class Vehicle {
         this.wheelFI.position = new BABYLON.Vector3(-4.5, -2, -2.8)
     }
 
+    public update(pos: Pos, theta: number) : void {
+        this.body.position.x = pos.x
+        this.body.position.z = pos.y
+        this.body.rotate(BABYLON.Axis.Y, theta, BABYLON.Space.WORLD)
+    }
+
     public rotateWheels(): void {
-        this.scene.registerAfterRender(function () {
+        this._scene.registerAfterRender(function () {
             this.wheelFI.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD)
             this.wheelFO.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD)
             this.wheelRI.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD)
