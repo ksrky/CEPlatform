@@ -1,7 +1,5 @@
 import * as BABYLON from '@babylonjs/core'
 
-import { Pos } from '../models/position'
-
 export class Vehicle {
     /**
      * Vehicle model */
@@ -93,12 +91,6 @@ export class Vehicle {
         this.wheelRO.position = new BABYLON.Vector3(2.5, -2, 2.8)
 
         this.wheelFI.position = new BABYLON.Vector3(-4.5, -2, -2.8)
-    }
-
-    public update(pos: Pos, theta: number) : void {
-        this.body.position.x = pos.x
-        this.body.position.z = pos.y
-        this.body.rotate(BABYLON.Axis.Y, theta, BABYLON.Space.WORLD)
     }
 
     public rotateWheels(theta : number): void {

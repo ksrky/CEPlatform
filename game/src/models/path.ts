@@ -4,7 +4,7 @@ import { Pos } from './position'
 export class Path {
     public waypoints : Pos[] // sorted in the direction of travel
     
-    constructor(waypoints) {
+    constructor(waypoints : Pos[]) {
         this.waypoints = waypoints
     }
 

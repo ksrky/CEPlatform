@@ -26,3 +26,7 @@ export class Pos {
         return new BABYLON.Vector3(this.x, 0, this.y)
     }
 }
+
+export function vector3toPos(v : BABYLON.Vector3){
+    return new Pos(v.x, v.z)
+}

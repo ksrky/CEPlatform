@@ -9,9 +9,12 @@ export class Control {
     private _trajectory : Pos[]
     private _velocities : number[]
 
-    constructor(dt : number) {
-        this.vehicle = new Vehicle() 
+    constructor(dt : number,  v=0) {
+        this.vehicle = new Vehicle(0, 0, v) 
         this._dt = dt
+
+        this._trajectory = []
+        this._velocities = []
     }
 
     public calculate(path : Path) {
@@ -27,34 +30,55 @@ export class Control {
 class PurePursuit {
     public Kdd : number 
 
-    constructor(Kdd=0.1) {
+    constructor(Kdd=1) {
         this.Kdd = Kdd
     }
 
-    private calc_intersection(center: Pos, radius: number, pt1: Pos, pt2: Pos) : Pos[] {
-        pt1 = pt1.centering(center)
-        pt2 = pt2.centering(center)
-        const dr = pt2.centering(pt1).norm()
+    private calc_intersection(radius: number, pt1: Pos, pt2: Pos, full_line=false, tangent_tol=1e-9) : Pos[] {
+        const {x:dx, y:dy} = pt2.centering(pt1)
+        const dr = dx ** 2 + dy ** 2
         const D = pt1.x * pt2.y - pt2.x * pt1.y
         const discriminant = radius**2 * dr**2 + D**2
         
         if (discriminant < 0) {
             return []
         } else {
-            return []
+            let intersections : Pos[] = [1, -1].map(i =>
+                new Pos((D * dy + i * (a => (a<0 ? -1 : 1))(dy) * dx * discriminant**.5) / dr**2,
+                    (-D * dx + i * Math.abs(dy) * discriminant**.5) / dr**2))
+            if(!full_line) {
+                intersections = intersections.filter(({x, y}) => {
+                    let t = -1
+                    if (dx == 0) {
+                        t = (y - pt1.y) / dy
+                    } else {
+                        t = (x - pt1.x) / dx
+                    }
+                    return 0 <= t && t <= 1
+                })
+            }
+            if(intersections.length == 2 && Math.abs(discriminant) <= tangent_tol){
+                return [intersections[0]]
+            } else {
+                return intersections
+            }
         }
     }
 
-    private get_target_point(look_ahead, waypoints) : Pos {
-        const intersections : Pos[] = []
-        for(let i=0; i<waypoints.length()-1; i++) {
+    private get_target_point(look_ahead : number, waypoints : Pos[]) : Pos {
+        let intersections : Pos[] = []
+        for(let i=0; i<waypoints.length-1; i++) {
             const wp1 = waypoints[i]
             const wp2 = waypoints[i+1]
-            intersections.concat(this.calc_intersection(new Pos(0, 0), look_ahead, wp1, wp2))
-        } 
+            intersections = intersections.concat(this.calc_intersection(look_ahead, wp1, wp2))
+        }
         const filtered = intersections.filter(wp => wp.x > 0)
-        if(filtered) return filtered[0]
-        else return null
+        if(filtered.length > 0) return filtered[0]
+        else {
+            console.error('look ahead distance: ', look_ahead)
+            console.error('waypoints: ', waypoints)
+            throw new Error('No intersections')
+        }
     }
 
     public get_control(waypoints: Pos[], velocity: number, wheel_base: number) : number {
