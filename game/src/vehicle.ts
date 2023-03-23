@@ -93,12 +93,10 @@ export class Vehicle {
         this.wheelFI.position = new BABYLON.Vector3(-4.5, -2, -2.8)
     }
 
-    public rotateWheels(): void {
-        this.scene.registerAfterRender(function () {
-            this.wheelFI.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD)
-            this.wheelFO.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD)
-            this.wheelRI.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD)
-            this.wheelRO.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD)
-        })
+    public rotateWheels(normal : BABYLON.Vector3): void {
+        this.wheelFI.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
+        this.wheelFO.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
+        this.wheelRI.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
+        this.wheelRO.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
     }
 }

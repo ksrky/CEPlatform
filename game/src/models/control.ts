@@ -3,22 +3,24 @@ import { Vehicle } from './vehicle'
 import { Pos } from './position'
 
 export class Control {
-    private _vehicle : Vehicle 
+    public vehicle : Vehicle 
     private _dt : number
 
     private _trajectory : Pos[]
+    private _velocities : number[]
 
-    constructor() {
-        this._vehicle = new Vehicle() 
-        this._dt = 0.01
+    constructor(dt : number) {
+        this.vehicle = new Vehicle() 
+        this._dt = dt
     }
 
     public calculate(path : Path) {
         const controller = new PurePursuit()
-        const delta = controller.get_control(path.waypoints, this._vehicle.velocity, this._vehicle.wheel_base)
+        const delta = controller.get_control(path.waypoints, this.vehicle.velocity, this.vehicle.wheel_base)
         const acc = 0
-        this._vehicle.update(acc, delta, this._dt)
-        this._trajectory.push(this._vehicle.pos)
+        this.vehicle.update(acc, delta, this._dt)
+        this._trajectory.push(this.vehicle.pos)
+        this._velocities.push(this.vehicle.velocity)
     }
 }
 

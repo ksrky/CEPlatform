@@ -15,12 +15,12 @@ export class Path {
         return [wp, theta]
     }
 
-    public getVehiclePath(vehicle : Vehicle) : Pos[] {
+    public getVehiclePath(vehicle : Vehicle) : Path {
         let waypoints : Pos[] = this.waypoints.map(wp => wp.centering(vehicle.pos).rotate(vehicle.heading))
         const idx = waypoints.findIndex(wp => wp.x > -5)
         waypoints = waypoints.slice(idx)
         if (waypoints) {
-            return waypoints
+            return new Path(waypoints)
         } else {
             throw new Error('Vehicle is too far from path')
         }

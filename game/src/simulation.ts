@@ -37,7 +37,7 @@ export class Simulation {
         this.scene.registerAfterRender(() => {
             this.vehicle.body.position.x = this.path.points[i].x
             this.vehicle.body.position.z = this.path.points[i].z
-            this.vehicle.rotateWheels()
+            this.vehicle.rotateWheels(this._normals[i])
         
             this._theta = Math.acos(BABYLON.Vector3.Dot(this._normals[i],this._normals[i+1]))
             let dir = BABYLON.Vector3.Cross(this._normals[i],this._normals[i+1]).y

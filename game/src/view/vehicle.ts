@@ -101,12 +101,12 @@ export class Vehicle {
         this.body.rotate(BABYLON.Axis.Y, theta, BABYLON.Space.WORLD)
     }
 
-    public rotateWheels(): void {
-        this._scene.registerAfterRender(function () {
-            this.wheelFI.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD)
-            this.wheelFO.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD)
-            this.wheelRI.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD)
-            this.wheelRO.rotate(BABYLON.Axis.Z, Math.PI / 64, BABYLON.Space.WORLD)
-        })
+    public rotateWheels(theta : number): void {
+        const heading = new BABYLON.Vector3(Math.cos(theta), 0, Math.sin(theta))
+        const normal = BABYLON.Vector3.Cross(heading, BABYLON.Axis.Z)
+        this.wheelFI.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
+        this.wheelFO.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
+        this.wheelRI.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
+        this.wheelRO.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
     }
 }
