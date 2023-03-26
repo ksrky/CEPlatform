@@ -24,8 +24,6 @@ export class Track {
                 (r + (r / 10) * Math.sin((6 * i * Math.PI) / n)) *
                         Math.sin((2 * i * Math.PI) / n)))       
         }
-        console.log(this.points[0])
-        // console.log(this.points)
     }
 
     private _makeTrack() : void {

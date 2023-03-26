@@ -20,15 +20,15 @@ export class Simulation {
     constructor(scene: BABYLON.Scene) {
         this.n_points = 200
         this.scene = scene
-        this.vehicle = new Vehicle(this.scene, 12)
         this.track = new Track(this.scene, this.n_points)
         this.dt = 0.05
 
+        this.vehicle = new Vehicle(this.scene, 12)
+        this.vehicle.body.position = new BABYLON.Vector3(this.track.points[0].x, 4, this.track.points[0].z)
+        this.vehicle.body.rotation.y = this.track.getStartPose()
+
         this._control = new Control(this.dt)
 
-        this.vehicle.body.position = this.track.points[0]
-        this.vehicle.body.position.y = 4
-        this.vehicle.body.rotation.y = this.track.getStartPose()
         // console.log(this.vehicle.body.position)
         // console.log(this.vehicle.body.rotation.y)
         // console.log(this.track.points)
