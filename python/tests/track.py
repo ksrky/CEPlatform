@@ -37,7 +37,7 @@ class Track:
         xc = data[:, 0] - x
         yc = data[:, 1] - y
         c, s = np.cos(theta), np.sin(theta)
-        xcr = xc * c + yc*s
+        xcr = xc*c + yc*s
         ycr = -xc*s + yc*c
         close = xcr**2 + ycr**2 < 600**2
         in_front = xcr > -5

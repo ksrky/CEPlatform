@@ -9,8 +9,8 @@ export class Control {
     private _trajectory : Pos[]
     private _velocities : number[]
 
-    constructor(dt : number,  v=0) {
-        this.vehicle = new Vehicle(0, 0, v) 
+    constructor(dt : number) {
+        this.vehicle = new Vehicle() 
         this._dt = dt
 
         this._trajectory = []
@@ -21,16 +21,17 @@ export class Control {
         const controller = new PurePursuit()
         const delta = controller.get_control(path.waypoints, this.vehicle.velocity, this.vehicle.wheel_base)
         const acc = 0
-        this.vehicle.update(acc, delta, this._dt)
+        // this.vehicle.update(acc, delta, this._dt)
         this._trajectory.push(this.vehicle.pos)
         this._velocities.push(this.vehicle.velocity)
+        return [delta, acc]
     }
 }
 
 class PurePursuit {
     public Kdd : number 
 
-    constructor(Kdd=1) {
+    constructor(Kdd=0.5) {
         this.Kdd = Kdd
     }
 
@@ -74,11 +75,7 @@ class PurePursuit {
         }
         const filtered = intersections.filter(wp => wp.x > 0)
         if(filtered.length > 0) return filtered[0]
-        else {
-            console.error('look ahead distance: ', look_ahead)
-            console.error('waypoints: ', waypoints)
-            throw new Error('No intersections')
-        }
+        else throw new Error('No intersections')
     }
 
     public get_control(waypoints: Pos[], velocity: number, wheel_base: number) : number {

@@ -19,7 +19,7 @@ export class Pos {
 
     public rotate(theta: number) : Pos {
         const [c, s] = [Math.cos(theta), Math.sin(theta)]
-        return new Pos(this.x*c + this.y*s, -this.x*s + this.y*c)
+        return new Pos(this.x*c - this.y*s, this.x*s + this.y*c)
     }
 
     public toVector3() : BABYLON.Vector3 {

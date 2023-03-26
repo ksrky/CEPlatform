@@ -16,7 +16,11 @@ export class Path {
     }
 
     public getVehiclePath(vehicle : Vehicle) : Path {
-        let waypoints : Pos[] = this.waypoints.map(wp => wp.centering(vehicle.pos).rotate(vehicle.heading))
+        // console.log(this.waypoints)
+        let waypoints : Pos[] = this.waypoints.map(wp => wp.centering(vehicle.pos))
+        // console.log(waypoints)
+        waypoints = waypoints.map(wp => wp.rotate(-vehicle.heading))
+        // console.log(waypoints.slice(0, 5))
         const idx = waypoints.findIndex(wp => wp.x > -5)
         waypoints = waypoints.slice(idx)
         if (waypoints) {

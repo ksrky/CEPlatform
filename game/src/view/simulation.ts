@@ -20,36 +20,41 @@ export class Simulation {
     constructor(scene: BABYLON.Scene) {
         this.n_points = 200
         this.scene = scene
-        this.vehicle = new Vehicle(this.scene)
+        this.vehicle = new Vehicle(this.scene, 12)
         this.track = new Track(this.scene, this.n_points)
-        this.dt = 0.01
+        this.dt = 0.05
 
-        this._control = new Control(this.dt, 2.5)
+        this._control = new Control(this.dt)
 
+        this.vehicle.body.position = this.track.points[0]
         this.vehicle.body.position.y = 4
-        this.vehicle.body.position.z = 50 // r
-        
+        this.vehicle.body.rotation.y = this.track.getStartPose()
+        // console.log(this.vehicle.body.position)
+        // console.log(this.vehicle.body.rotation.y)
+        // console.log(this.track.points)
         this._registerAnimation()
     }
 
     private _perception() {
-        const points : Pos[] = this.track.points.map(vector3toPos) 
+        const points : Pos[] = this.track.points.map(vector3toPos)
+        this._control.vehicle.pos = vector3toPos(this.vehicle.body.position)
+        this._control.vehicle.velocity = this.vehicle.velocity
+        // Rotation around the Y-axis of the left-hand coordinate system is counterclockwise
+        this._control.vehicle.heading = -this.vehicle.body.rotation.y
         this._path = new Path(points).getVehiclePath(this._control.vehicle)
-    }
-
-    private _decision() {
-        this._control.calculate(this._path)
     }
 
     private _registerAnimation() : void {
         this.scene.registerAfterRender(() => {
             this._perception()
             if(this._path.waypoints.length < 10) return
-            this._decision()
-            this.vehicle.body.position.x += this._control.vehicle.pos.x
-            this.vehicle.body.position.z += this._control.vehicle.pos.y
-            this.vehicle.body.rotation.y = this._control.vehicle.heading
-            this.vehicle.rotateWheels(this._control.vehicle.heading)
+            const [delta, acc] = this._control.calculate(this._path)
+            // console.log(delta, acc)
+            // Rotation around the Y-axis of the left-hand coordinate system is counterclockwise
+            this.vehicle.update(acc, -delta, this.dt)
+            // console.log(this.vehicle.body.rotation.y)
+            // console.log(this.vehicle.body.position.x, this.vehicle.body.position.z)
+            this.vehicle.rotateWheels(this.vehicle.body.rotation.y)
         })
     }
 }

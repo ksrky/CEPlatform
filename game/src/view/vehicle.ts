@@ -11,8 +11,11 @@ export class Vehicle {
     public wheelRI: BABYLON.InstancedMesh
     public wheelRO: BABYLON.InstancedMesh
 
-    constructor(scene: BABYLON.Scene) {
+    public velocity : number
+
+    constructor(scene: BABYLON.Scene, velocity = 20) {
         this._scene = scene
+        this.velocity = velocity
         this._makeBody()
         this._attachWheels()
     }
@@ -93,12 +96,19 @@ export class Vehicle {
         this.wheelFI.position = new BABYLON.Vector3(-4.5, -2, -2.8)
     }
 
+    public update(acc : number, delta : number, dt : number){
+        this.body.position.x += this.velocity * Math.cos(this.body.rotation.y) * dt
+        this.body.position.z += this.velocity * Math.sin(this.body.rotation.y) * dt
+        this.body.rotation.y += delta
+        this.velocity += acc * dt 
+    }
+
     public rotateWheels(theta : number): void {
         const heading = new BABYLON.Vector3(Math.cos(theta), 0, Math.sin(theta))
-        const normal = BABYLON.Vector3.Cross(heading, BABYLON.Axis.Z)
+        const normal = BABYLON.Vector3.Cross(heading, BABYLON.Axis.Y)
         this.wheelFI.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
         this.wheelFO.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
-        this.wheelRI.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
-        this.wheelRO.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
+        this.wheelRI.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD) // inv
+        this.wheelRO.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD) // inv
     }
 }
