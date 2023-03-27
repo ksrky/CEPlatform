@@ -10,7 +10,6 @@ export class Track {
 
         this._generatePath(n_points)
         this._makeTrack()
-        console.log(this.points)
     }
 
     private _generatePath(n: number) : void {
@@ -45,6 +44,6 @@ export class Track {
     public getStartPose() : number {
         const path3d = new BABYLON.Path3D(this.points)
         const {x, z} = path3d.getTangentAt(0)
-        return Math.atan2(z, x)
+        return -Math.atan2(z, x)
     }
 }

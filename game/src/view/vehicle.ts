@@ -26,10 +26,10 @@ export class Vehicle {
         bodyMaterial.backFaceCulling = false
 
         const side = [
-            new BABYLON.Vector3(-4, 2, -2),
             new BABYLON.Vector3(4, 2, -2),
-            new BABYLON.Vector3(5, -2, -2),
-            new BABYLON.Vector3(-7, -2, -2),
+            new BABYLON.Vector3(-4, 2, -2),
+            new BABYLON.Vector3(-5, -2, -2),
+            new BABYLON.Vector3(7, -2, -2),
         ]
 
         side.push(side[0]) //close trapezium
@@ -80,35 +80,34 @@ export class Vehicle {
 
         this.wheelFI.rotate(BABYLON.Axis.X, Math.PI / 2, BABYLON.Space.WORLD)
         this.wheelFI.parent = this.body
+        this.wheelFI.position = new BABYLON.Vector3(4.5, -2, -2.8)
 
         this.wheelFO = this.wheelFI.createInstance('FO')
         this.wheelFO.parent = this.body
-        this.wheelFO.position = new BABYLON.Vector3(-4.5, -2, 2.8)
+        this.wheelFO.position = new BABYLON.Vector3(4.5, -2, 2.8)
 
         this.wheelRI = this.wheelFI.createInstance('RI')
         this.wheelRI.parent = this.body
-        this.wheelRI.position = new BABYLON.Vector3(2.5, -2, -2.8)
+        this.wheelRI.position = new BABYLON.Vector3(-2.5, -2, -2.8)
 
         this.wheelRO = this.wheelFI.createInstance('RO')
         this.wheelRO.parent = this.body
-        this.wheelRO.position = new BABYLON.Vector3(2.5, -2, 2.8)
-
-        this.wheelFI.position = new BABYLON.Vector3(-4.5, -2, -2.8)
+        this.wheelRO.position = new BABYLON.Vector3(-2.5, -2, 2.8)
     }
 
     public update(acc : number, delta : number, dt : number){
         this.body.position.x += this.velocity * Math.cos(this.body.rotation.y) * dt
-        this.body.position.z += this.velocity * Math.sin(this.body.rotation.y) * dt
+        this.body.position.z += this.velocity * Math.sin(-this.body.rotation.y) * dt
         this.body.rotation.y += delta
         this.velocity += acc * dt 
     }
 
     public rotateWheels(theta : number): void {
-        const heading = new BABYLON.Vector3(Math.cos(theta), 0, Math.sin(theta))
+        const heading = new BABYLON.Vector3(Math.cos(-theta), 0, Math.sin(-theta))
         const normal = BABYLON.Vector3.Cross(heading, BABYLON.Axis.Y)
-        this.wheelFI.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
-        this.wheelFO.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD)
-        this.wheelRI.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD) // inv
-        this.wheelRO.rotate(normal, Math.PI / 64, BABYLON.Space.WORLD) // inv
+        this.wheelFI.rotate(normal, -Math.PI / 64, BABYLON.Space.WORLD)
+        this.wheelFO.rotate(normal, -Math.PI / 64, BABYLON.Space.WORLD)
+        this.wheelRI.rotate(normal, -Math.PI / 64, BABYLON.Space.WORLD)
+        this.wheelRO.rotate(normal, -Math.PI / 64, BABYLON.Space.WORLD)
     }
 }

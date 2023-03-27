@@ -37,23 +37,23 @@ class PurePursuit {
 
     private calc_intersection(radius: number, pt1: Pos, pt2: Pos, full_line=false, tangent_tol=1e-9) : Pos[] {
         const {x:dx, y:dy} = pt2.centering(pt1)
-        const dr = dx ** 2 + dy ** 2
+        const dr = (dx**2 + dy**2)**.5
         const D = pt1.x * pt2.y - pt2.x * pt1.y
-        const discriminant = radius**2 * dr**2 + D**2
+        const discriminant = radius**2 * dr**2 - D**2
         
         if (discriminant < 0) {
             return []
         } else {
             let intersections : Pos[] = [1, -1].map(i =>
-                new Pos((D * dy + i * (a => (a<0 ? -1 : 1))(dy) * dx * discriminant**.5) / dr**2,
+                new Pos((D * dy + i * (dy<0 ? -1 : 1) * dx * discriminant**.5) / dr**2,
                     (-D * dx + i * Math.abs(dy) * discriminant**.5) / dr**2))
             if(!full_line) {
                 intersections = intersections.filter(({x, y}) => {
-                    let t = -1
-                    if (dx == 0) {
-                        t = (y - pt1.y) / dy
-                    } else {
+                    let t : number
+                    if (Math.abs(dx) > Math.abs(dy)) {
                         t = (x - pt1.x) / dx
+                    } else {
+                        t = (y - pt1.y) / dy
                     }
                     return 0 <= t && t <= 1
                 })

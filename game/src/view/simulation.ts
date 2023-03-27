@@ -29,9 +29,6 @@ export class Simulation {
 
         this._control = new Control(this.dt)
 
-        // console.log(this.vehicle.body.position)
-        // console.log(this.vehicle.body.rotation.y)
-        // console.log(this.track.points)
         this._registerAnimation()
     }
 
@@ -47,13 +44,9 @@ export class Simulation {
     private _registerAnimation() : void {
         this.scene.registerAfterRender(() => {
             this._perception()
-            if(this._path.waypoints.length < 10) return
             const [delta, acc] = this._control.calculate(this._path)
-            // console.log(delta, acc)
             // Rotation around the Y-axis of the left-hand coordinate system is counterclockwise
             this.vehicle.update(acc, -delta, this.dt)
-            // console.log(this.vehicle.body.rotation.y)
-            // console.log(this.vehicle.body.position.x, this.vehicle.body.position.z)
             this.vehicle.rotateWheels(this.vehicle.body.rotation.y)
         })
     }

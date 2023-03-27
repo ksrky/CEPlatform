@@ -14,6 +14,11 @@ export class Pos {
     }
 
     public centering(offset : Pos) : Pos {
+        /**
+         * substract offset from its position
+         * @param offset
+         * @return position
+         */
         return new Pos(this.x-offset.x, this.y-offset.y)
     }
 
