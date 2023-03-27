@@ -8,6 +8,7 @@ module.exports = {
         // eslint-disable-next-line no-undef
         path: path.resolve(__dirname, 'dist'),
         clean: true,
+        assetModuleFilename: 'assets/[hash][ext]',
     },
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
@@ -18,6 +19,10 @@ module.exports = {
                 test: /\.tsx?$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
+            },
+            {
+                test: /\.(gif|png|jpe?g|svg)$/,
+                type: 'asset/inline',
             },
         ],
     },

@@ -50,7 +50,7 @@ export class Vehicle {
     private _attachWheels(): void {
         const wheelMaterial = new BABYLON.StandardMaterial('wheel_mat', this._scene)
         const wheelTexture = new BABYLON.Texture(
-            'http://i.imgur.com/ZUWbT6L.png',
+            'https://github.com/ksrky/CEPlatform/game/assets/wheel.png',
             this._scene
         )
         wheelMaterial.diffuseTexture = wheelTexture

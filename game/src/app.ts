@@ -22,7 +22,8 @@ class App {
         camera.setPosition(new BABYLON.Vector3(-12, 25, -84))
         camera.attachControl(canvas, true)
 
-        new BABYLON.AxesViewer(scene, 30) //tmp
+        // 3D Axis for debugging
+        // new BABYLON.AxesViewer(scene, 30)
 
         new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(1, 0.5, 0), scene)
 
