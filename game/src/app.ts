@@ -3,7 +3,7 @@ import '@babylonjs/inspector'
 import '@babylonjs/loaders/glTF'
 import * as BABYLON from '@babylonjs/core'
 
-import { Simulation }  from './view/simulation'
+import { Simulation }  from './simulation'
 
 class App {
     constructor() {
