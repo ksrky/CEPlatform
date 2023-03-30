@@ -5,7 +5,7 @@ import { Vector3 } from '@babylonjs/core/Maths/math'
 import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera'
 import '@babylonjs/core/Debug/debugLayer'
 
-import { Simulation }  from './simulation'
+import { Simulation } from './simulation'
 
 class App {
     constructor() {
@@ -17,10 +17,10 @@ class App {
         document.body.appendChild(canvas)
 
         // initialize babylon scene and engine
-        const engine = new  Engine(canvas, true)
-        const scene = new  Scene(engine)
+        const engine = new Engine(canvas, true)
+        const scene = new Scene(engine)
 
-        const camera = new ArcRotateCamera('camera1',  0, 0, 0, new Vector3(0, 0, 0), scene)
+        const camera = new ArcRotateCamera('camera1', 0, 0, 0, new Vector3(0, 0, 0), scene)
         camera.setPosition(new Vector3(-12, 25, -84))
         camera.attachControl(canvas, true)
 
@@ -43,7 +43,6 @@ class App {
                 }
             }
         })
-
 
         // run the main render loop
         engine.runRenderLoop(() => {

@@ -6,7 +6,6 @@ import { InstancedMesh } from '@babylonjs/core/Meshes/instancedMesh'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 
-
 export class Vehicle {
     /**
      * Vehicle model */
@@ -18,10 +17,10 @@ export class Vehicle {
     public wheelRI: InstancedMesh
     public wheelRO: InstancedMesh
 
-    public velocity : number
-    public wheel_base : number
+    public velocity: number
+    public wheel_base: number
 
-    constructor(scene: Scene, velocity = 10, wheel_base=2) {
+    constructor(scene: Scene, velocity = 10, wheel_base = 2) {
         this._scene = scene
         this.velocity = velocity
         this.wheel_base = wheel_base
@@ -43,10 +42,7 @@ export class Vehicle {
 
         side.push(side[0]) //close trapezium
 
-        const extrudePath = [
-            new Vector3(0, 0, 0),
-            new Vector3(0, 0, 4),
-        ]
+        const extrudePath = [new Vector3(0, 0, 0), new Vector3(0, 0, 4)]
 
         this.body = MeshBuilder.ExtrudeShape(
             'body',
@@ -58,10 +54,7 @@ export class Vehicle {
 
     private _attachWheels(): void {
         const wheelMaterial = new StandardMaterial('wheel_mat', this._scene)
-        const wheelTexture = new Texture(
-            'http://i.imgur.com/ZUWbT6L.png',
-            this._scene
-        )
+        const wheelTexture = new Texture('http://i.imgur.com/ZUWbT6L.png', this._scene)
         wheelMaterial.diffuseTexture = wheelTexture
 
         //Set color for wheel tread as black
@@ -86,7 +79,6 @@ export class Vehicle {
             this._scene
         )
         this.wheelFI.material = wheelMaterial
-
         this.wheelFI.rotate(Axis.X, Math.PI / 2, Space.WORLD)
         this.wheelFI.parent = this.body
         this.wheelFI.position = new Vector3(4.5, -2, -2.8)
@@ -104,14 +96,14 @@ export class Vehicle {
         this.wheelRO.position = new Vector3(-2.5, -2, 2.8)
     }
 
-    public update(acc : number, delta : number, dt : number){
+    public update(acc: number, delta: number, dt: number) {
         this.body.position.x += this.velocity * Math.cos(this.body.rotation.y) * dt
         this.body.position.z += this.velocity * Math.sin(-this.body.rotation.y) * dt
-        this.body.rotation.y += this.velocity * Math.tan(delta) / this.wheel_base * dt
-        this.velocity += acc * dt 
+        this.body.rotation.y += ((this.velocity * Math.tan(delta)) / this.wheel_base) * dt
+        this.velocity += acc * dt
     }
 
-    public rotateWheels(theta : number): void {
+    public rotateWheels(theta: number): void {
         const heading = new Vector3(Math.cos(-theta), 0, Math.sin(-theta))
         const normal = Vector3.Cross(heading, Axis.Y)
         this.wheelFI.rotate(normal, -Math.PI / 64, Space.WORLD)
