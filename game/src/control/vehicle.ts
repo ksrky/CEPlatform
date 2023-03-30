@@ -25,12 +25,11 @@ export class Vehicle {
         this.velocity = v
     }
 
-    /*public update(acc : number, delta : number, dt : number){
+    public update(acc : number, delta : number, dt : number){
         this.pos.x += this.velocity * Math.cos(this.heading) * dt
         this.pos.y += this.velocity * Math.sin(this.heading) * dt
         const ang_vel = this.velocity * Math.tan(delta) / this.wheel_base
         this.heading = this.getHeading(this.heading + ang_vel * dt)
-        // const acc_eff = acc - this.velocity**2 * 0.001
         this.velocity += acc * dt
-    }*/
+    }
 }

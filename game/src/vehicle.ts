@@ -12,10 +12,12 @@ export class Vehicle {
     public wheelRO: BABYLON.InstancedMesh
 
     public velocity : number
+    public wheel_base : number
 
-    constructor(scene: BABYLON.Scene, velocity = 20) {
+    constructor(scene: BABYLON.Scene, velocity = 10, wheel_base=2) {
         this._scene = scene
         this.velocity = velocity
+        this.wheel_base = wheel_base
         this._makeBody()
         this._attachWheels()
     }
@@ -98,7 +100,7 @@ export class Vehicle {
     public update(acc : number, delta : number, dt : number){
         this.body.position.x += this.velocity * Math.cos(this.body.rotation.y) * dt
         this.body.position.z += this.velocity * Math.sin(-this.body.rotation.y) * dt
-        this.body.rotation.y += delta
+        this.body.rotation.y += this.velocity * Math.tan(delta) / this.wheel_base * dt
         this.velocity += acc * dt 
     }
 
