@@ -1,4 +1,4 @@
-import * as BABYLON from '@babylonjs/core'
+import { Vector3 } from '@babylonjs/core/Maths/math'
 
 export class Pos {
     public x : number
@@ -27,11 +27,11 @@ export class Pos {
         return new Pos(this.x*c - this.y*s, this.x*s + this.y*c)
     }
 
-    public toVector3() : BABYLON.Vector3 {
-        return new BABYLON.Vector3(this.x, 0, this.y)
+    public toVector3() : Vector3 {
+        return new Vector3(this.x, 0, this.y)
     }
 }
 
-export function vector3toPos(v : BABYLON.Vector3){
+export function vector3toPos(v : Vector3){
     return new Pos(v.x, v.z)
 }

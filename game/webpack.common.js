@@ -2,7 +2,17 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
 module.exports = {
-    entry: './src/app.ts',
+    entry: {
+        main: {
+            import: './src/app.ts',
+            dependOn: 'babylonjs',
+        },
+        babylonjs: [
+            '@babylonjs/core/scene',
+            '@babylonjs/core/Maths/math',
+            '@babylonjs/core/Meshes/meshBuilder',
+        ],
+    },
     output: {
         filename: 'js/[name].bundle.js',
         // eslint-disable-next-line no-undef

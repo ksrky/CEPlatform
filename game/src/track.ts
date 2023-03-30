@@ -1,11 +1,14 @@
-import * as BABYLON from '@babylonjs/core'
+import { Color3, Path3D, Vector3 } from '@babylonjs/core/Maths/math'
+import { Scene } from '@babylonjs/core/scene'
+import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder'
+
 
 export class Track {
-    public scene: BABYLON.Scene
+    public scene: Scene
 
-    public points : BABYLON.Vector3[]
+    public points : Vector3[]
 
-    constructor(scene: BABYLON.Scene, n_points : number) {
+    constructor(scene: Scene, n_points : number) {
         this.scene = scene
 
         this._generatePath(n_points)
@@ -17,7 +20,7 @@ export class Track {
         this.points = []
         for (let i = 0; i < n + 1; i++) {
             this.points.push(
-                new BABYLON.Vector3((r + (r / 5) * Math.sin((8 * i * Math.PI) / n)) *
+                new Vector3((r + (r / 5) * Math.sin((8 * i * Math.PI) / n)) *
                         Math.cos((2 * i * Math.PI) / n),
                 0,
                 (r + (r / 10) * Math.sin((6 * i * Math.PI) / n)) *
@@ -26,15 +29,15 @@ export class Track {
     }
 
     private _makeTrack() : void {
-        const track = BABYLON.MeshBuilder.CreateLines(
+        const track = MeshBuilder.CreateLines(
             'track',
             { points: this.points },
             this.scene
         )
-        track.color = new BABYLON.Color3(0, 0, 0)
+        track.color = new Color3(0, 0, 0)
 
         const r = 50
-        /* const ground = */BABYLON.MeshBuilder.CreateGround(
+        /* const ground = */MeshBuilder.CreateGround(
             'ground',
             { width: 3 * r, height: 3 * r },
             this.scene
@@ -42,7 +45,7 @@ export class Track {
     }
 
     public getStartPose() : number {
-        const path3d = new BABYLON.Path3D(this.points)
+        const path3d = new Path3D(this.points)
         const {x, z} = path3d.getTangentAt(0)
         return -Math.atan2(z, x)
     }

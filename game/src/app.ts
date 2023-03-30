@@ -1,7 +1,9 @@
+import { Scene } from '@babylonjs/core/scene'
+import { Engine } from '@babylonjs/core/Engines/engine'
+import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight'
+import { Vector3 } from '@babylonjs/core/Maths/math'
+import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera'
 import '@babylonjs/core/Debug/debugLayer'
-import '@babylonjs/inspector'
-import '@babylonjs/loaders/glTF'
-import * as BABYLON from '@babylonjs/core'
 
 import { Simulation }  from './simulation'
 
@@ -15,17 +17,17 @@ class App {
         document.body.appendChild(canvas)
 
         // initialize babylon scene and engine
-        const engine = new BABYLON.Engine(canvas, true)
-        const scene = new BABYLON.Scene(engine)
+        const engine = new  Engine(canvas, true)
+        const scene = new  Scene(engine)
 
-        const camera = new BABYLON.ArcRotateCamera('camera1',  0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene)
-        camera.setPosition(new BABYLON.Vector3(-12, 25, -84))
+        const camera = new ArcRotateCamera('camera1',  0, 0, 0, new Vector3(0, 0, 0), scene)
+        camera.setPosition(new Vector3(-12, 25, -84))
         camera.attachControl(canvas, true)
 
         // 3D Axis for debugging
-        // new BABYLON.AxesViewer(scene, 30)
+        // new AxesViewer(scene, 30)
 
-        new BABYLON.HemisphericLight('light1', new BABYLON.Vector3(1, 0.5, 0), scene)
+        new HemisphericLight('light1', new Vector3(1, 0.5, 0), scene)
 
         // simulation
         new Simulation(scene)

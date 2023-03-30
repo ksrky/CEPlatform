@@ -1,20 +1,27 @@
-import * as BABYLON from '@babylonjs/core'
+import { Axis, Color3, Color4, Space, Vector3, Vector4 } from '@babylonjs/core/Maths/math'
+import { Scene } from '@babylonjs/core/scene'
+import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder'
+import { Mesh } from '@babylonjs/core/Meshes/mesh'
+import { InstancedMesh } from '@babylonjs/core/Meshes/instancedMesh'
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
+import { Texture } from '@babylonjs/core/Materials/Textures/texture'
+
 
 export class Vehicle {
     /**
      * Vehicle model */
-    private _scene: BABYLON.Scene
+    private _scene: Scene
 
-    public body: BABYLON.Mesh
-    public wheelFI: BABYLON.Mesh
-    public wheelFO: BABYLON.InstancedMesh
-    public wheelRI: BABYLON.InstancedMesh
-    public wheelRO: BABYLON.InstancedMesh
+    public body: Mesh
+    public wheelFI: Mesh
+    public wheelFO: InstancedMesh
+    public wheelRI: InstancedMesh
+    public wheelRO: InstancedMesh
 
     public velocity : number
     public wheel_base : number
 
-    constructor(scene: BABYLON.Scene, velocity = 10, wheel_base=2) {
+    constructor(scene: Scene, velocity = 10, wheel_base=2) {
         this._scene = scene
         this.velocity = velocity
         this.wheel_base = wheel_base
@@ -23,51 +30,51 @@ export class Vehicle {
     }
 
     private _makeBody(): void {
-        const bodyMaterial = new BABYLON.StandardMaterial('body_mat', this._scene)
-        bodyMaterial.diffuseColor = new BABYLON.Color3(1.0, 0.25, 0.25)
+        const bodyMaterial = new StandardMaterial('body_mat', this._scene)
+        bodyMaterial.diffuseColor = new Color3(1.0, 0.25, 0.25)
         bodyMaterial.backFaceCulling = false
 
         const side = [
-            new BABYLON.Vector3(4, 2, -2),
-            new BABYLON.Vector3(-4, 2, -2),
-            new BABYLON.Vector3(-5, -2, -2),
-            new BABYLON.Vector3(7, -2, -2),
+            new Vector3(4, 2, -2),
+            new Vector3(-4, 2, -2),
+            new Vector3(-5, -2, -2),
+            new Vector3(7, -2, -2),
         ]
 
         side.push(side[0]) //close trapezium
 
         const extrudePath = [
-            new BABYLON.Vector3(0, 0, 0),
-            new BABYLON.Vector3(0, 0, 4),
+            new Vector3(0, 0, 0),
+            new Vector3(0, 0, 4),
         ]
 
-        this.body = BABYLON.MeshBuilder.ExtrudeShape(
+        this.body = MeshBuilder.ExtrudeShape(
             'body',
-            { shape: side, path: extrudePath, cap: BABYLON.Mesh.CAP_ALL },
+            { shape: side, path: extrudePath, cap: Mesh.CAP_ALL },
             this._scene
         )
         this.body.material = bodyMaterial
     }
 
     private _attachWheels(): void {
-        const wheelMaterial = new BABYLON.StandardMaterial('wheel_mat', this._scene)
-        const wheelTexture = new BABYLON.Texture(
+        const wheelMaterial = new StandardMaterial('wheel_mat', this._scene)
+        const wheelTexture = new Texture(
             'http://i.imgur.com/ZUWbT6L.png',
             this._scene
         )
         wheelMaterial.diffuseTexture = wheelTexture
 
         //Set color for wheel tread as black
-        const faceColors: BABYLON.Color4[] = []
-        faceColors[1] = new BABYLON.Color4(0, 0, 0)
+        const faceColors: Color4[] = []
+        faceColors[1] = new Color4(0, 0, 0)
 
         //set texture for flat face of wheel
-        const faceUV: BABYLON.Vector4[] = []
-        faceUV[0] = new BABYLON.Vector4(0, 0, 1, 1)
-        faceUV[2] = new BABYLON.Vector4(0, 0, 1, 1)
+        const faceUV: Vector4[] = []
+        faceUV[0] = new Vector4(0, 0, 1, 1)
+        faceUV[2] = new Vector4(0, 0, 1, 1)
 
         // attaching wheels
-        this.wheelFI = BABYLON.MeshBuilder.CreateCylinder(
+        this.wheelFI = MeshBuilder.CreateCylinder(
             'wheelFI',
             {
                 diameter: 3,
@@ -80,21 +87,21 @@ export class Vehicle {
         )
         this.wheelFI.material = wheelMaterial
 
-        this.wheelFI.rotate(BABYLON.Axis.X, Math.PI / 2, BABYLON.Space.WORLD)
+        this.wheelFI.rotate(Axis.X, Math.PI / 2, Space.WORLD)
         this.wheelFI.parent = this.body
-        this.wheelFI.position = new BABYLON.Vector3(4.5, -2, -2.8)
+        this.wheelFI.position = new Vector3(4.5, -2, -2.8)
 
         this.wheelFO = this.wheelFI.createInstance('FO')
         this.wheelFO.parent = this.body
-        this.wheelFO.position = new BABYLON.Vector3(4.5, -2, 2.8)
+        this.wheelFO.position = new Vector3(4.5, -2, 2.8)
 
         this.wheelRI = this.wheelFI.createInstance('RI')
         this.wheelRI.parent = this.body
-        this.wheelRI.position = new BABYLON.Vector3(-2.5, -2, -2.8)
+        this.wheelRI.position = new Vector3(-2.5, -2, -2.8)
 
         this.wheelRO = this.wheelFI.createInstance('RO')
         this.wheelRO.parent = this.body
-        this.wheelRO.position = new BABYLON.Vector3(-2.5, -2, 2.8)
+        this.wheelRO.position = new Vector3(-2.5, -2, 2.8)
     }
 
     public update(acc : number, delta : number, dt : number){
@@ -105,11 +112,11 @@ export class Vehicle {
     }
 
     public rotateWheels(theta : number): void {
-        const heading = new BABYLON.Vector3(Math.cos(-theta), 0, Math.sin(-theta))
-        const normal = BABYLON.Vector3.Cross(heading, BABYLON.Axis.Y)
-        this.wheelFI.rotate(normal, -Math.PI / 64, BABYLON.Space.WORLD)
-        this.wheelFO.rotate(normal, -Math.PI / 64, BABYLON.Space.WORLD)
-        this.wheelRI.rotate(normal, -Math.PI / 64, BABYLON.Space.WORLD)
-        this.wheelRO.rotate(normal, -Math.PI / 64, BABYLON.Space.WORLD)
+        const heading = new Vector3(Math.cos(-theta), 0, Math.sin(-theta))
+        const normal = Vector3.Cross(heading, Axis.Y)
+        this.wheelFI.rotate(normal, -Math.PI / 64, Space.WORLD)
+        this.wheelFO.rotate(normal, -Math.PI / 64, Space.WORLD)
+        this.wheelRI.rotate(normal, -Math.PI / 64, Space.WORLD)
+        this.wheelRO.rotate(normal, -Math.PI / 64, Space.WORLD)
     }
 }

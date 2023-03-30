@@ -1,4 +1,5 @@
-import * as BABYLON from '@babylonjs/core'
+import { Scene } from '@babylonjs/core/scene'
+import { Vector3 } from '@babylonjs/core/Maths/math'
 
 import { Vehicle } from './vehicle'
 import { Track } from './track'
@@ -7,7 +8,7 @@ import { Control } from './control'
 import { Pos, vector3toPos } from './position'
 
 export class Simulation {
-    public scene : BABYLON.Scene
+    public scene : Scene
     public vehicle : Vehicle
     public track : Track
     public n_points : number
@@ -17,14 +18,14 @@ export class Simulation {
     private _control : Control
     
 
-    constructor(scene: BABYLON.Scene) {
+    constructor(scene: Scene) {
         this.n_points = 200
         this.scene = scene
         this.track = new Track(this.scene, this.n_points)
         this.dt = 0.05
 
         this.vehicle = new Vehicle(this.scene, 12)
-        this.vehicle.body.position = new BABYLON.Vector3(this.track.points[0].x, 4, this.track.points[0].z)
+        this.vehicle.body.position = new Vector3(this.track.points[0].x, 4, this.track.points[0].z)
         this.vehicle.body.rotation.y = this.track.getStartPose()
 
         this._control = new Control(this.dt)
