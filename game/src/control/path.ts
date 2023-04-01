@@ -1,5 +1,5 @@
-import {Vehicle} from './vehicle'
-import {Pos} from '../position'
+import { Vehicle } from './vehicle'
+import { Pos } from '../position'
 
 export class Path {
     public waypoints: Pos[] // sorted in the direction of travel
@@ -10,7 +10,7 @@ export class Path {
 
     public getStartPose(): [Pos, number] {
         const wp = this.waypoints[0]
-        const {x, y} = this.waypoints[1].centering(wp)
+        const { x, y } = this.waypoints[1].centering(wp)
         const theta = Math.atan2(x, y)
         return [wp, theta]
     }

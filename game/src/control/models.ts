@@ -1,6 +1,6 @@
 import {Pos} from '../position'
 
-interface Controller {
+export interface Controller {
     get_control(
         waypoints: Pos[],
         velocity: number,

@@ -1,4 +1,4 @@
-import {Pos} from '../position'
+import { Pos } from '../position'
 
 export class Vehicle {
     public pos: Pos

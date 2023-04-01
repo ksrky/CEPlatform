@@ -32,7 +32,7 @@ export class Simulation {
         this._registerAnimation()
     }
 
-    private _perception() {
+    private _feedback() {
         const points: Pos[] = this.track.points.map(vector3toPos)
         this._control.vehicle.pos = vector3toPos(this.vehicle.body.position)
         this._control.vehicle.velocity = this.vehicle.velocity
@@ -43,7 +43,7 @@ export class Simulation {
 
     private _registerAnimation(): void {
         this.scene.registerAfterRender(() => {
-            this._perception()
+            this._feedback()
             const [delta, acc] = this._control.calculate(this._path)
             // Rotation around the Y-axis of the left-hand coordinate system is counterclockwise
             this.vehicle.update(acc, -delta, this.dt)
