@@ -14,22 +14,4 @@ export class Vehicle {
         this.wheel_base = 2
         this.mass = 100
     }
-
-    private getHeading(theta): number {
-        return Math.atan2(Math.sin(theta), Math.cos(theta))
-    }
-
-    public set(x: number, y: number, v: number) {
-        this.pos.x = x
-        this.pos.y = y
-        this.velocity = v
-    }
-
-    public update(acc: number, delta: number, dt: number) {
-        this.pos.x += this.velocity * Math.cos(this.heading) * dt
-        this.pos.y += this.velocity * Math.sin(this.heading) * dt
-        const ang_vel = (this.velocity * Math.tan(delta)) / this.wheel_base
-        this.heading = this.getHeading(this.heading + ang_vel * dt)
-        this.velocity += acc * dt
-    }
 }
