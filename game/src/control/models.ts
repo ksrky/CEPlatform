@@ -1,11 +1,6 @@
 import { Pos } from '../position'
 
 export interface Controller {
-    get_control(
-        waypoints: Pos[],
-        velocity: number,
-        wheel_base: number
-    ): { steer: number; acc: number }
     /**
      * Controls the steering angle and the acceleration of the vehicle
      * @param waypoints Waypoints transformed so that the vehicle is oriented in the positive X-axis at the origin
@@ -13,13 +8,18 @@ export interface Controller {
      * @param wheel_base Wheel base of the vehicle
      * @return dictionary that contains the steering angle and the acceleration
      */
+    get_control(
+        waypoints: Pos[],
+        velocity: number,
+        wheel_base: number
+    ): { steer: number; acc: number }
 }
 
+/**
+ * Pure pursuit algorithm.
+ * @param Kdd Product of Kdd and vehicle velocity is look ahead distance
+ */
 export class PurePursuit implements Controller {
-    /**
-     * Pure pursuit algorithm.
-     * @param Kdd Product of Kdd and vehicle velocity is look ahead distance
-     */
     public Kdd: number
 
     constructor(Kdd = 0.5) {
