@@ -17,6 +17,7 @@ import '@babylonjs/core/Debug/debugLayer'
 
 // Local imports
 import { Simulation } from './simulation'
+import { HUD } from './ui'
 
 enum State {
     START = 0,
@@ -27,6 +28,8 @@ class App {
     private _canvas: HTMLCanvasElement
     private _engine: Engine
     private _scene: Scene
+
+    private _ui: HUD
 
     private _state: number = 0
     private _gamescene: Scene
@@ -150,6 +153,8 @@ class App {
         //--SETUP SCENE--
         this._scene.detachControl()
         const scene = this._gamescene
+
+        this._ui = new HUD()
 
         this._simulation.registerAnimation()
 

@@ -5,19 +5,22 @@ import { Mesh } from '@babylonjs/core/Meshes/mesh'
 import { InstancedMesh } from '@babylonjs/core/Meshes/instancedMesh'
 import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { Texture } from '@babylonjs/core/Materials/Textures/texture'
+
 import wheel_image from './assets/wheel.png'
 
+/**
+ * Vehicle model */
 export class Vehicle {
-    /**
-     * Vehicle model */
     private _scene: Scene
 
+    // Physical objects
     public body: Mesh
     public wheelFI: Mesh
     public wheelFO: InstancedMesh
     public wheelRI: InstancedMesh
     public wheelRO: InstancedMesh
 
+    // Properties
     public velocity: number
     public wheel_base: number
 
@@ -56,7 +59,7 @@ export class Vehicle {
     private _attachWheels(): void {
         const wheelMaterial = new StandardMaterial('wheel_mat', this._scene)
         const wheelTexture = new Texture(
-            wheel_image /*'http://i.imgur.com/ZUWbT6L.png'*/,
+            'images/wheel.png' /*wheel_image 'http://i.imgur.com/ZUWbT6L.png'*/,
             this._scene
         )
         wheelMaterial.diffuseTexture = wheelTexture

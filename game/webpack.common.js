@@ -1,17 +1,18 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
     entry: {
         main: {
             import: './src/app.ts',
-            dependOn: 'babylonjs',
+            dependOn: ['babylonjs_base', 'babylonjs'],
         },
-        babylonjs: [
-            '@babylonjs/core/scene',
-            '@babylonjs/core/Maths/math',
-            '@babylonjs/core/Meshes/meshBuilder',
-        ],
+        babylonjs: {
+            import: ['@babylonjs/core/Maths/math', '@babylonjs/core/Meshes/meshBuilder'],
+            dependOn: 'babylonjs_base',
+        },
+        babylonjs_base: ['@babylonjs/core/scene', '@babylonjs/core/Engines/engine'],
     },
     output: {
         filename: 'js/[name].bundle.js',
@@ -41,5 +42,6 @@ module.exports = {
             inject: true,
             template: './public/index.html',
         }),
+        new BundleAnalyzerPlugin(),
     ],
 }
