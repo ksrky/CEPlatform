@@ -20,8 +20,11 @@ export class Simulation {
     constructor(scene: Scene) {
         this._n_points = 200
         this._scene = scene
-        this._track = new Track(this._scene, this._n_points)
         this._dt = 0.05
+    }
+
+    public async init(): Promise<void> {
+        this._track = new Track(this._scene, this._n_points)
 
         this._vehicle = new Vehicle(this._scene, 12)
         this._vehicle.body.position = new Vector3(
@@ -32,11 +35,9 @@ export class Simulation {
         this._vehicle.body.rotation.y = this._track.getStartPose()
 
         this._control = new Control(this._dt)
-
-        this._registerAnimation()
     }
 
-    private _feedback() {
+    private _feedback(): void {
         const points: Pos[] = this._track.points.map(vector3toPos)
         this._control.vehicle.pos = vector3toPos(this._vehicle.body.position)
         this._control.vehicle.velocity = this._vehicle.velocity
@@ -45,7 +46,7 @@ export class Simulation {
         this._path = new Path(points).getVehiclePath(this._control.vehicle)
     }
 
-    private _registerAnimation(): void {
+    public registerAnimation(): void {
         this._scene.registerAfterRender(() => {
             this._feedback()
             const [delta, acc] = this._control.calculate(this._path)

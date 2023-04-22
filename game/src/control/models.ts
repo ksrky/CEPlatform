@@ -7,11 +7,11 @@ export interface Controller {
         wheel_base: number
     ): { steer: number; acc: number }
     /**
-     * Controls steering angle and acceleration of the vehicle
+     * Controls the steering angle and the acceleration of the vehicle
      * @param waypoints Waypoints transformed so that the vehicle is oriented in the positive X-axis at the origin
      * @param velocity Velocity of the vehicle
      * @param wheel_base Wheel base of the vehicle
-     * @return dictionary that contains steering angle (steer) and acceleration(acc)
+     * @return dictionary that contains the steering angle and the acceleration
      */
 }
 
