@@ -1,4 +1,4 @@
-import {Vector3} from '@babylonjs/core/Maths/math'
+import { Vector3 } from '@babylonjs/core/Maths/math'
 
 export class Pos {
     public x: number

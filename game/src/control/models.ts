@@ -1,11 +1,11 @@
-import {Pos} from '../position'
+import { Pos } from '../position'
 
 export interface Controller {
     get_control(
         waypoints: Pos[],
         velocity: number,
         wheel_base: number
-    ): {steer: number; acc: number}
+    ): { steer: number; acc: number }
     /**
      * Controls steering angle and acceleration of the vehicle
      * @param waypoints Waypoints transformed so that the vehicle is oriented in the positive X-axis at the origin
@@ -33,7 +33,7 @@ export class PurePursuit implements Controller {
         full_line = false,
         tangent_tol = 1e-9
     ): Pos[] {
-        const {x: dx, y: dy} = pt2.centering(pt1)
+        const { x: dx, y: dy } = pt2.centering(pt1)
         const dr = (dx ** 2 + dy ** 2) ** 0.5
         const D = pt1.x * pt2.y - pt2.x * pt1.y
         const discriminant = radius ** 2 * dr ** 2 - D ** 2
@@ -49,7 +49,7 @@ export class PurePursuit implements Controller {
                     )
             )
             if (!full_line) {
-                intersections = intersections.filter(({x, y}) => {
+                intersections = intersections.filter(({ x, y }) => {
                     const t = Math.abs(dx) > Math.abs(dy) ? (x - pt1.x) / dx : (y - pt1.y) / dy
                     return 0 <= t && t <= 1
                 })
@@ -78,12 +78,12 @@ export class PurePursuit implements Controller {
         waypoints: Pos[],
         velocity: number,
         wheel_base: number
-    ): {steer: number; acc: number} {
+    ): { steer: number; acc: number } {
         const look_ahead: number = this.Kdd * velocity
 
         const track_point: Pos = this.get_target_point(look_ahead, waypoints)
         const alpha: number = Math.atan2(track_point.y, track_point.x)
         const steer: number = Math.atan((2 * wheel_base * Math.sin(alpha)) / look_ahead)
-        return {steer, acc: 0}
+        return { steer, acc: 0 }
     }
 }
