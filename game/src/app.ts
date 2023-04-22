@@ -155,6 +155,7 @@ class App {
         const scene = this._gamescene
 
         this._ui = new HUD()
+        // await this._ui.createSample()
 
         this._simulation.registerAnimation()
 

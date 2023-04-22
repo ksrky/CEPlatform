@@ -1,18 +1,33 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin
 
 module.exports = {
     entry: {
         main: {
             import: './src/app.ts',
-            dependOn: ['babylonjs_base', 'babylonjs'],
+            dependOn: ['babylonjs_base', 'babylonjs_camera', 'babylonjs_mesh', 'babylonjs_gui'],
         },
-        babylonjs: {
-            import: ['@babylonjs/core/Maths/math', '@babylonjs/core/Meshes/meshBuilder'],
-            dependOn: 'babylonjs_base',
+        babylonjs_gui: {
+            import: '@babylonjs/gui/2D/controls',
+            dependOn: ['babylonjs_base', 'babylonjs_mesh'],
         },
-        babylonjs_base: ['@babylonjs/core/scene', '@babylonjs/core/Engines/engine'],
+        babylonjs_camera: {
+            import: [
+                '@babylonjs/core/Cameras/arcRotateCamera',
+                '@babylonjs/core/Cameras/freeCamera',
+                '@babylonjs/core/Lights/hemisphericLight',
+            ],
+            dependOn: ['babylonjs_base', 'babylonjs_mesh'],
+        },
+        babylonjs_mesh: {
+            import: ['@babylonjs/core/Meshes/mesh', '@babylonjs/core/Meshes/meshBuilder'],
+            dependOn: ['babylonjs_base'],
+        },
+        babylonjs_base: [
+            '@babylonjs/core/scene',
+            '@babylonjs/core/Engines/engine',
+            '@babylonjs/core/Maths/math',
+        ],
     },
     output: {
         filename: 'js/[name].bundle.js',
@@ -42,6 +57,5 @@ module.exports = {
             inject: true,
             template: './public/index.html',
         }),
-        new BundleAnalyzerPlugin(),
     ],
 }

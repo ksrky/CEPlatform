@@ -1,15 +1,19 @@
+// import { Scene } from '@babylonjs/core/scene'
+
 import { AdvancedDynamicTexture } from '@babylonjs/gui/2D/advancedDynamicTexture'
 import { Button } from '@babylonjs/gui/2D/controls/button'
 import { Control } from '@babylonjs/gui/2D/controls/control'
 import { Rectangle } from '@babylonjs/gui/2D/controls/rectangle'
 import { StackPanel } from '@babylonjs/gui/2D/controls/stackPanel'
 import { Image } from '@babylonjs/gui/2D/controls/image'
+// import '@babylonjs/gui'
 
 export class HUD {
     //Pause toggle
     public gamePaused: boolean
 
     //UI Elements
+    public sightBtn: Button
     public pauseBtn: Button
     private _mainUI: AdvancedDynamicTexture
     private _pauseMenu: Rectangle
@@ -23,8 +27,8 @@ export class HUD {
         pauseBtn.width = '50px'
         pauseBtn.height = '50px'
         pauseBtn.thickness = 0
-        pauseBtn.verticalAlignment = 0
-        pauseBtn.horizontalAlignment = 1
+        pauseBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
+        pauseBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT
         mainUI.addControl(pauseBtn)
         pauseBtn.zIndex = 10
         this.pauseBtn = pauseBtn
@@ -51,11 +55,11 @@ export class HUD {
         pauseMenu.thickness = 0
         pauseMenu.isVisible = false
 
-        //background image
+        // background image
         const image = new Image('pause', 'images/pause.png')
         pauseMenu.addControl(image)
 
-        //stack panel for the buttons
+        // stack panel for the buttons
         const stackPanel = new StackPanel()
         stackPanel.width = 0.83
         pauseMenu.addControl(stackPanel)
@@ -69,8 +73,8 @@ export class HUD {
         resumeBtn.cornerRadius = 14
         resumeBtn.fontSize = '12px'
         resumeBtn.textBlock.resizeToFit = true
-        resumeBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT
-        resumeBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
+        resumeBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT
+        resumeBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM
         stackPanel.addControl(resumeBtn)
 
         this._pauseMenu = pauseMenu
@@ -82,4 +86,11 @@ export class HUD {
             this.gamePaused = false
         })
     }
+
+    /*public async createSample(): Promise<void> {
+        let advancedTexture = AdvancedDynamicTexture.CreateFullscreenUI('advancedGUI', true)
+        await advancedTexture.parseFromURLAsync(
+            'https://doc.babylonjs.com/examples/ColorPickerGui.json'
+        )
+    }*/
 }
