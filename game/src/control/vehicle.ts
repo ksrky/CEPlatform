@@ -1,5 +1,11 @@
 import { Pos } from '../position'
 
+/**
+ * Abstract vehicle model
+ * @param x default is 0.
+ * @param y default is 0.
+ * @param v velocity. default is 0.
+ */
 export class Vehicle {
     public pos: Pos
     public heading: number

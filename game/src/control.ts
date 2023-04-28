@@ -30,7 +30,7 @@ export class Control {
     }
 
     public calculate(path: Path) {
-        const inp: ControlInput = this._controller.get_control(
+        const inp: ControlInput = this._controller.getControl(
             path.waypoints,
             this.vehicle.velocity,
             this.vehicle.wheel_base

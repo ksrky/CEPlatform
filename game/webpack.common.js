@@ -1,16 +1,33 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = {
     entry: {
         main: {
             import: './src/app.ts',
-            dependOn: 'babylonjs',
+            dependOn: ['babylonjs_base', 'babylonjs_camera', 'babylonjs_mesh', 'babylonjs_gui'],
         },
-        babylonjs: [
+        babylonjs_gui: {
+            import: '@babylonjs/gui/2D/controls',
+            dependOn: ['babylonjs_base', 'babylonjs_mesh'],
+        },
+        babylonjs_camera: {
+            import: [
+                '@babylonjs/core/Cameras/arcRotateCamera',
+                '@babylonjs/core/Cameras/freeCamera',
+                '@babylonjs/core/Lights/hemisphericLight',
+            ],
+            dependOn: ['babylonjs_base', 'babylonjs_mesh'],
+        },
+        babylonjs_mesh: {
+            import: ['@babylonjs/core/Meshes/mesh', '@babylonjs/core/Meshes/meshBuilder'],
+            dependOn: ['babylonjs_base'],
+        },
+        babylonjs_base: [
             '@babylonjs/core/scene',
+            '@babylonjs/core/Engines/engine',
             '@babylonjs/core/Maths/math',
-            '@babylonjs/core/Meshes/meshBuilder',
         ],
     },
     output: {
@@ -40,6 +57,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             inject: true,
             template: './public/index.html',
+        }),
+        new CopyPlugin({
+            patterns: [{ from: 'public/images', to: 'images' }],
         }),
     ],
 }
