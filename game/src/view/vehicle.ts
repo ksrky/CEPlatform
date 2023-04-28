@@ -31,7 +31,7 @@ export class Vehicle {
     private _camRoot: TransformNode
     /** rotations along the z-axis (up/down tilting) */
     private _yTilt: TransformNode
-    private static readonly CAMERA_ORIGINAL_TILT: Vector3 = new Vector3(0, 0, -0.5934119456780721)
+    private static readonly CAMERA_ORIGINAL_TILT: Vector3 = new Vector3(0, 0, -0.4)
 
     // Properties
     public velocity: number

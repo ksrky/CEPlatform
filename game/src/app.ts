@@ -3,7 +3,6 @@ import { Scene } from '@babylonjs/core/scene'
 import { Engine } from '@babylonjs/core/Engines/engine'
 import { HemisphericLight } from '@babylonjs/core/Lights/hemisphericLight'
 import { Color4, Vector3 } from '@babylonjs/core/Maths/math'
-import { ArcRotateCamera } from '@babylonjs/core/Cameras/arcRotateCamera'
 import { FreeCamera } from '@babylonjs/core/Cameras/freeCamera'
 import '@babylonjs/core/Loading/loadingScreen'
 
@@ -18,7 +17,6 @@ import '@babylonjs/core/Debug/debugLayer'
 // Local imports
 import { Simulation } from './simulation'
 import { HUD } from './view/ui'
-import { DriverCamera } from './view/camera'
 
 enum State {
     START = 0,
@@ -32,11 +30,10 @@ class App {
 
     private _ui: HUD
 
-    private _state: number = 0
+    private _state = 0
     private _gamescene: Scene
 
     private _simulation: Simulation
-    private _drivercam: DriverCamera
 
     constructor() {
         // create the canvas html element and attach it to the webpage
@@ -107,11 +104,11 @@ class App {
         // create a simple button
         const startBtn = Button.CreateSimpleButton('start', 'PLAY')
         startBtn.width = 0.2
-        startBtn.height = '40px'
+        startBtn.height = '80px'
         startBtn.color = 'white'
         startBtn.top = '-14px'
         startBtn.thickness = 0
-        startBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM
+        startBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
         guiMenu.addControl(startBtn)
 
         // this handles interactions with the start button attached to the scene
@@ -128,10 +125,7 @@ class App {
         this._scene = scene
         this._state = State.START
 
-        let finishedLoading = false
-        await this._setUpGame().then((res) => {
-            finishedLoading = true
-        })
+        await this._setUpGame()
     }
 
     private async _setUpGame() {

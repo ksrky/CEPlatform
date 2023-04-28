@@ -7,14 +7,14 @@ export class Track {
 
     public points: Vector3[]
 
-    constructor(scene: Scene, n_points: number, start_pos : Vector3) {
+    constructor(scene: Scene, nPoints: number, startPos: Vector3) {
         this.scene = scene
 
-        this._generatePath(n_points, start_pos)
+        this._generatePath(nPoints, startPos)
         this._makeTrack()
     }
 
-    private _generatePath(n: number, offset : Vector3): void {
+    private _generatePath(n: number, offset: Vector3): void {
         const r = 50
         this.points = []
         for (let i = 0; i < n + 1; i++) {
@@ -29,7 +29,7 @@ export class Track {
             )
         }
 
-        this.points.map(v => v.subtract(offset))
+        this.points.map((v) => v.subtract(offset))
     }
 
     private _makeTrack(): void {

@@ -85,7 +85,7 @@ export class PurePursuit implements Controller {
         velocity: number,
         wheelBase: number
     ): { steer: number; acc: number } {
-        const lookAhead: number = this._Kdd * velocity //Math.max(this._minLA, Math.min(this._maxLA, this._Kdd * velocity))
+        const lookAhead: number = Math.max(this._minLA, Math.min(this._maxLA, this._Kdd * velocity))
 
         const trackPoint: Pos = this.getTargetPoint(lookAhead, waypoints)
         const alpha: number = Math.atan2(trackPoint.y, trackPoint.x)
