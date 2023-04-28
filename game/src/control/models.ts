@@ -5,28 +5,34 @@ export interface Controller {
      * Controls the steering angle and the acceleration of the vehicle
      * @param waypoints Waypoints transformed so that the vehicle is oriented in the positive X-axis at the origin
      * @param velocity Velocity of the vehicle
-     * @param wheel_base Wheel base of the vehicle
+     * @param wheeBase Wheel base of the vehicle
      * @return dictionary that contains the steering angle and the acceleration
      */
-    get_control(
+    getControl(
         waypoints: Pos[],
         velocity: number,
-        wheel_base: number
+        wheelBase: number
     ): { steer: number; acc: number }
 }
 
 /**
  * Pure pursuit algorithm.
  * @param Kdd Product of Kdd and vehicle velocity is look ahead distance
+ * @param minLA Minimum look ahead distance
+ * @param maxLA Maximum look ahead distance
  */
 export class PurePursuit implements Controller {
-    public Kdd: number
+    private _Kdd: number
+    private _minLA: number
+    private _maxLA: number
 
-    constructor(Kdd = 0.5) {
-        this.Kdd = Kdd
+    constructor(Kdd = 0.5, minLA = 3, maxLA = 10) {
+        this._Kdd = Kdd
+        this._minLA = minLA
+        this._maxLA = maxLA
     }
 
-    private calc_intersection(
+    private calcIntersection(
         radius: number,
         pt1: Pos,
         pt2: Pos,
@@ -62,28 +68,28 @@ export class PurePursuit implements Controller {
         }
     }
 
-    private get_target_point(look_ahead: number, waypoints: Pos[]): Pos {
+    private getTargetPoint(look_ahead: number, waypoints: Pos[]): Pos {
         let intersections: Pos[] = []
         for (let i = 0; i < waypoints.length - 1; i++) {
             const wp1 = waypoints[i]
             const wp2 = waypoints[i + 1]
-            intersections = intersections.concat(this.calc_intersection(look_ahead, wp1, wp2))
+            intersections = intersections.concat(this.calcIntersection(look_ahead, wp1, wp2))
         }
         const filtered = intersections.filter((wp) => wp.x > 0)
         if (filtered.length > 0) return filtered[0]
         else throw new Error('No intersections')
     }
 
-    public get_control(
+    public getControl(
         waypoints: Pos[],
         velocity: number,
-        wheel_base: number
+        wheelBase: number
     ): { steer: number; acc: number } {
-        const look_ahead: number = this.Kdd * velocity
+        const lookAhead: number = this._Kdd * velocity //Math.max(this._minLA, Math.min(this._maxLA, this._Kdd * velocity))
 
-        const track_point: Pos = this.get_target_point(look_ahead, waypoints)
-        const alpha: number = Math.atan2(track_point.y, track_point.x)
-        const steer: number = Math.atan((2 * wheel_base * Math.sin(alpha)) / look_ahead)
+        const trackPoint: Pos = this.getTargetPoint(lookAhead, waypoints)
+        const alpha: number = Math.atan2(trackPoint.y, trackPoint.x)
+        const steer: number = Math.atan((2 * wheelBase * Math.sin(alpha)) / lookAhead)
         return { steer, acc: 0 }
     }
 }

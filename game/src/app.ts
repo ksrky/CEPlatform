@@ -17,7 +17,8 @@ import '@babylonjs/core/Debug/debugLayer'
 
 // Local imports
 import { Simulation } from './simulation'
-import { HUD } from './ui'
+import { HUD } from './view/ui'
+import { DriverCamera } from './view/camera'
 
 enum State {
     START = 0,
@@ -35,6 +36,7 @@ class App {
     private _gamescene: Scene
 
     private _simulation: Simulation
+    private _drivercam: DriverCamera
 
     constructor() {
         // create the canvas html element and attach it to the webpage
@@ -136,17 +138,14 @@ class App {
         const scene = new Scene(this._engine)
         this._gamescene = scene
 
-        const camera = new ArcRotateCamera('camera1', 0, 0, 0, new Vector3(0, 0, 0), scene)
-        camera.setPosition(new Vector3(-12, 25, -84))
-        camera.attachControl(this._canvas, true)
-
-        // 3D Axis for debugging
-        // new AxesViewer(scene, 30)
+        // const camera = new ArcRotateCamera('camera1', 0, 0, 0, new Vector3(0, 0, 0), scene)
+        // camera.setPosition(new Vector3(-12, 25, -84))
 
         new HemisphericLight('light1', new Vector3(1, 0.5, 0), scene)
 
         this._simulation = new Simulation(scene)
         await this._simulation.init()
+        this._simulation.vehicle.camera.attachControl(this._canvas, true)
     }
 
     private async _goToGame() {

@@ -23,7 +23,7 @@ export class Pos {
     }
 
     /**
-     * substract offset from its position
+     * subtract offset from its position
      * @param offset
      * @return position
      */
@@ -46,12 +46,12 @@ export class Pos {
     public toVector3(): Vector3 {
         return new Vector3(this.x, 0, this.y)
     }
-}
 
-/**
- * transpose BABYLON.Vector3 to Pos
- * @param vec Babylon.js representation of vector
- */
-export function vector3toPos(vec: Vector3) {
-    return new Pos(vec.x, vec.z)
+    /**
+     * transpose BABYLON.Vector3 to Pos
+     * @param vec Babylon.js representation of vector
+     */
+    public static Vector3toPos(vec: Vector3): Pos {
+        return new Pos(vec.x, vec.z)
+    }
 }
