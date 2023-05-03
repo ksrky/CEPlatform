@@ -14,7 +14,9 @@
   "license": "ISC",
   "devDependencies": {
     "@babylonjs/core": "^5.50.1",
+    "@babylonjs/gui-editor": "^5.50.1",
     "@babylonjs/inspector": "^5.50.1",
+    "@babylonjs/procedural-textures": "^5.50.1",
     "@typescript-eslint/eslint-plugin": "^5.54.1",
     "@typescript-eslint/parser": "^5.54.1",
     "copy-webpack-plugin": "^11.0.0",

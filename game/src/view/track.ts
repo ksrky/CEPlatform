@@ -1,22 +1,26 @@
 import { Color3, Path3D, Vector3 } from '@babylonjs/core/Maths/math'
 import { Scene } from '@babylonjs/core/scene'
 import { MeshBuilder } from '@babylonjs/core/Meshes/meshBuilder'
+import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
+import { GrassProceduralTexture } from '@babylonjs/procedural-textures/grass/index'
 
 export class Track {
-    public scene: Scene
+    private _scene: Scene
 
-    public points: Vector3[]
+    public points: Vector3[] 
+    private static readonly GROUND_SIZE = 500
 
     constructor(scene: Scene, nPoints: number, startPos: Vector3) {
-        this.scene = scene
+        this._scene = scene
 
         this._generatePath(nPoints, startPos)
+        this._makeGround()
         this._makeTrack()
     }
 
-    private _generatePath(n: number, offset: Vector3): void {
-        const r = 50
+    private _generatePath(n: number, offset: Vector3): void { 
         this.points = []
+        const r = 50
         for (let i = 0; i < n + 1; i++) {
             this.points.push(
                 new Vector3(
@@ -32,16 +36,22 @@ export class Track {
         this.points.map((v) => v.subtract(offset))
     }
 
-    private _makeTrack(): void {
-        const track = MeshBuilder.CreateLines('track', { points: this.points }, this.scene)
-        track.color = new Color3(0, 0, 0)
+    private _makeGround(): void {
+        const grassMaterial = new StandardMaterial('grassMat', this._scene)
+        const grassTexture = new GrassProceduralTexture('grassTex', 256, this._scene)
+        grassMaterial.ambientTexture = grassTexture
 
-        const r = 50
-        /* const ground = */ MeshBuilder.CreateGround(
+        const ground = MeshBuilder.CreateGround(
             'ground',
-            { width: 3 * r, height: 3 * r },
-            this.scene
+            { width: Track.GROUND_SIZE, height: Track.GROUND_SIZE },
+            this._scene
         )
+        // ground.material = grassMaterial
+    }
+
+    private _makeTrack(): void {
+        const track = MeshBuilder.CreateLines('track', { points: this.points }, this._scene)
+        track.color = new Color3(0, 0, 0)
     }
 
     public getStartPose(): number {
