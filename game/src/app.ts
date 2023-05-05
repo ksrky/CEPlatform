@@ -8,25 +8,27 @@ import '@babylonjs/core/Loading/loadingScreen'
 
 // GUI imports
 import { AdvancedDynamicTexture } from '@babylonjs/gui/2D/advancedDynamicTexture'
-import { Button } from '@babylonjs/gui/2D/controls/button'
-import { Control } from '@babylonjs/gui/2D/controls/control'
 
 // Debug imports
 import '@babylonjs/core/Debug/debugLayer'
+import '@babylonjs/inspector'
 
 // Local imports
 import { Simulation } from './simulation'
 import { HUD } from './view/ui'
+import { Config, defaultConfig } from './config'
 
 enum State {
     START = 0,
     GAME = 1,
+    HOWTO = 2,
 }
 
 class App {
     private _canvas: HTMLCanvasElement
     private _engine: Engine
     private _scene: Scene
+    private _config: Config
 
     private _ui: HUD
 
@@ -42,15 +44,24 @@ class App {
         // initialize babylon scene and engine
         this._engine = new Engine(this._canvas, true)
         this._scene = new Scene(this._engine)
+        this._config = defaultConfig
 
         // hide/show the Inspector
         window.addEventListener('keydown', (ev) => {
             // Shift+Ctrl+Alt+I
-            if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.key === 'i') {
+            if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.key === 'I') {
                 if (this._scene.debugLayer.isVisible()) {
                     this._scene.debugLayer.hide()
                 } else {
                     this._scene.debugLayer.show()
+                }
+            }
+            // Shift+Ctrl+Alt+J
+            if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.key === 'C') {
+                if (document.getElementById('config').style.display == 'none') {
+                    document.getElementById('config').style.display = 'block'
+                } else {
+                    document.getElementById('config').style.display = 'none'
                 }
             }
         })
@@ -64,10 +75,12 @@ class App {
         canvas.style.width = '100%'
         canvas.style.height = '100%'
         canvas.id = 'gameCanvas'
-        document.body.appendChild(canvas)
+        document.getElementById('main').appendChild(canvas)
 
         return canvas
     }
+
+    private _createReactDOM(): void {}
 
     private async _main(): Promise<void> {
         await this._gotoStart()
@@ -76,8 +89,13 @@ class App {
             switch (this._state) {
                 case State.START:
                     this._scene.render()
+                    break
                 case State.GAME:
                     this._scene.render()
+                    break
+                case State.HOWTO:
+                    this._scene.render()
+                    break
                 default:
                     break
             }
@@ -98,24 +116,23 @@ class App {
         camera.setTarget(Vector3.Zero())
 
         // create a fullscreen ui for all of our GUI elements
-        const guiMenu = AdvancedDynamicTexture.CreateFullscreenUI('UI')
-        guiMenu.idealHeight = 720 // fit our fullscreen ui to this height
+        const playMenu = AdvancedDynamicTexture.CreateFullscreenUI('PlayMenu')
+        await playMenu.parseFromSnippetAsync('294QF7')
+        playMenu.idealHeight = 720 // fit our fullscreen ui to this height
 
-        // create a simple button
-        const startBtn = Button.CreateSimpleButton('start', 'PLAY')
-        startBtn.width = 0.2
-        startBtn.height = '80px'
-        startBtn.color = 'white'
-        startBtn.top = '-14px'
-        startBtn.thickness = 0
-        startBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
-        guiMenu.addControl(startBtn)
+        const playBtn = playMenu.getControlByName('playBtn')
+        const howtoBtn = playMenu.getControlByName('howtoBtn')
 
         // this handles interactions with the start button attached to the scene
-        startBtn.onPointerDownObservable.add(() => {
+        playBtn.onPointerDownObservable.add(() => {
             this._goToGame()
             scene.detachControl() // observables disabled
         })
+
+        /*howtoBtn.onPointerDownObservable.add(() => {
+            this.gotoHowto()
+            scene.detachControl()
+        })*/
 
         //--SCENE FINISHED LOADING--
         await scene.whenReadyAsync()

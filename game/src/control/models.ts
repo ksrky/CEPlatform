@@ -1,4 +1,5 @@
 import { Pos } from '../position'
+import { Parameter } from '../types/parameter'
 
 export interface Controller {
     /**
@@ -22,11 +23,11 @@ export interface Controller {
  * @param maxLA Maximum look ahead distance
  */
 export class PurePursuit implements Controller {
-    private _Kdd: number
+    private _Kdd: Parameter
     private _minLA: number
     private _maxLA: number
 
-    constructor(Kdd = 0.5, minLA = 3, maxLA = 10) {
+    constructor(Kdd = new Parameter(0.5, 0, 1), minLA = 3, maxLA = 10) {
         this._Kdd = Kdd
         this._minLA = minLA
         this._maxLA = maxLA
@@ -68,12 +69,12 @@ export class PurePursuit implements Controller {
         }
     }
 
-    private getTargetPoint(look_ahead: number, waypoints: Pos[]): Pos {
+    private getTargetPoint(lookAhead: Parameter, waypoints: Pos[]): Pos {
         let intersections: Pos[] = []
         for (let i = 0; i < waypoints.length - 1; i++) {
             const wp1 = waypoints[i]
             const wp2 = waypoints[i + 1]
-            intersections = intersections.concat(this.calcIntersection(look_ahead, wp1, wp2))
+            intersections = intersections.concat(this.calcIntersection(lookAhead.value, wp1, wp2))
         }
         const filtered = intersections.filter((wp) => wp.x > 0)
         if (filtered.length > 0) return filtered[0]
@@ -85,11 +86,15 @@ export class PurePursuit implements Controller {
         velocity: number,
         wheelBase: number
     ): { steer: number; acc: number } {
-        const lookAhead: number = Math.max(this._minLA, Math.min(this._maxLA, this._Kdd * velocity))
+        const lookAhead: Parameter = new Parameter(
+            this._minLA,
+            this._maxLA,
+            this._Kdd.value * velocity
+        )
 
         const trackPoint: Pos = this.getTargetPoint(lookAhead, waypoints)
         const alpha: number = Math.atan2(trackPoint.y, trackPoint.x)
-        const steer: number = Math.atan((2 * wheelBase * Math.sin(alpha)) / lookAhead)
+        const steer: number = Math.atan((2 * wheelBase * Math.sin(alpha)) / lookAhead.value)
         return { steer, acc: 0 }
     }
 }

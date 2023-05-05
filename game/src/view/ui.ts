@@ -13,24 +13,61 @@ export class HUD {
     public gamePaused: boolean
 
     //UI Elements
-    public sightBtn: Button
-    public pauseBtn: Button
+    public pauseBtn: Control // Button
     private _mainUI: AdvancedDynamicTexture
-    private _pauseMenu: Rectangle
+    private _pauseMenu: Control // Rectangle
 
     constructor() {
-        const mainUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
+        /*const mainUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
+        mainUI.parseFromSnippetAsync('T7EKW8#5')
         this._mainUI = mainUI
         this._mainUI.idealHeight = 720
 
-        const pauseBtn = Button.CreateImageOnlyButton('pauseBtn', './images/pauseBtn.svg')
+        const pauseBtn = this._mainUI.getControlByName('PauseBtn')
+        console.log(pauseBtn)*/
+        /*const pauseBtn = Button.CreateImageOnlyButton('pauseBtn', './images/pauseBtn.svg')
         pauseBtn.width = '50px'
         pauseBtn.height = '50px'
         pauseBtn.thickness = 0
         pauseBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
         pauseBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT
         mainUI.addControl(pauseBtn)
-        pauseBtn.zIndex = 10
+        pauseBtn.zIndex = 10*/
+        /*this.pauseBtn = pauseBtn
+        //when the button is down, make pause menu visable and add control to it
+        pauseBtn.onPointerDownObservable.add(() => {
+            this._pauseMenu.isVisible = true
+            mainUI.addControl(this._pauseMenu)
+            this.pauseBtn.isHitTestVisible = false
+
+            this.gamePaused = true
+        })*/
+
+        this._createMainUI()
+        // this._createPauseMenu()
+    }
+
+    private async _createMainUI(): Promise<void> {
+        const mainUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
+        await mainUI.parseFromSnippetAsync('T7EKW8#8')
+        this._mainUI = mainUI
+        this._mainUI.idealHeight = 720
+
+        this.gamePaused = false
+        const pauseMenu = this._mainUI.getControlByName('PauseMenu')
+        pauseMenu.isVisible = false
+        this._pauseMenu = pauseMenu
+
+        const pauseBtn = this._mainUI.getControlByName('PauseBtn')
+        console.log(pauseBtn)
+        /*const pauseBtn = Button.CreateImageOnlyButton('pauseBtn', './images/pauseBtn.svg')
+        pauseBtn.width = '50px'
+        pauseBtn.height = '50px'
+        pauseBtn.thickness = 0
+        pauseBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
+        pauseBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT
+        mainUI.addControl(pauseBtn)
+        pauseBtn.zIndex = 10*/
         this.pauseBtn = pauseBtn
         //when the button is down, make pause menu visable and add control to it
         pauseBtn.onPointerDownObservable.add(() => {
@@ -41,13 +78,20 @@ export class HUD {
             this.gamePaused = true
         })
 
-        this._createPauseMenu()
+        const resumeBtn = this._mainUI.getControlByName('ResumeBtn')
+
+        resumeBtn.onPointerDownObservable.add(() => {
+            this._pauseMenu.isVisible = false
+            this.pauseBtn.isHitTestVisible = true
+
+            this.gamePaused = false
+        })
     }
 
-    private _createPauseMenu(): void {
-        this.gamePaused = false
+    private _createEditWindow(): void {}
 
-        const pauseMenu = new Rectangle()
+    private _createPauseMenu(): void {
+        /*const pauseMenu = new Rectangle()
         pauseMenu.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_CENTER
         pauseMenu.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
         pauseMenu.height = 0.8
@@ -73,18 +117,9 @@ export class HUD {
         resumeBtn.cornerRadius = 14
         resumeBtn.fontSize = '12px'
         resumeBtn.textBlock.resizeToFit = true
-        resumeBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_RIGHT
-        resumeBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_BOTTOM
-        stackPanel.addControl(resumeBtn)
-
-        this._pauseMenu = pauseMenu
-
-        resumeBtn.onPointerDownObservable.add(() => {
-            this._pauseMenu.isVisible = false
-            this.pauseBtn.isHitTestVisible = true
-
-            this.gamePaused = false
-        })
+        resumeBtn.horizontalAlignment = Control.HORIZONTAL_ALIGNMENT_LEFT
+        resumeBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_TOP
+        stackPanel.addControl(resumeBtn)*/
     }
 
     /*public async createSample(): Promise<void> {

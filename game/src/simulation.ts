@@ -10,9 +10,12 @@ import { Pos } from './position'
 export class Simulation {
     private _scene: Scene
 
+    public time: number
+    private static readonly SIMULATION_DELTA_TIME = 0.05
+
     public vehicle: Vehicle
     private _track: Track
-    private _n_points: number
+    private _nPoints: number
     private _dt: number
     public static readonly INITIAL_VEHICLE_POSITION: Vector3 = new Vector3(50, 0, 0)
     public static readonly INITIAL_VEHICLE_TILT: Vector3 = new Vector3(0, Math.PI / 2, 0)
@@ -21,13 +24,15 @@ export class Simulation {
     private _control: Control
 
     constructor(scene: Scene) {
-        this._n_points = 200
         this._scene = scene
-        this._dt = 0.05
+        this._nPoints = 200
+        this._dt = Simulation.SIMULATION_DELTA_TIME * 1
     }
 
     public async init(): Promise<void> {
-        this._track = new Track(this._scene, this._n_points, Simulation.INITIAL_VEHICLE_POSITION)
+        this.time = 0
+
+        this._track = new Track(this._scene, this._nPoints, Simulation.INITIAL_VEHICLE_POSITION)
 
         this.vehicle = new Vehicle(this._scene, 12)
         this.vehicle.root.position = Simulation.INITIAL_VEHICLE_POSITION
@@ -53,6 +58,8 @@ export class Simulation {
             this.vehicle.update(acc, -delta, this._dt)
             this.vehicle.rotateWheels(this.vehicle.root.rotation.y)
             this.vehicle.updateCamera()
+
+            this.time += Simulation.SIMULATION_DELTA_TIME
         })
     }
 }
