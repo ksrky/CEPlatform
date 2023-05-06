@@ -2,10 +2,3 @@ body {
     margin: 0;
     overflow: hidden;
 }
-
-div#config {
-    position: absolute;
-    right: 0px;
-    bottom: 0px;
-    width: 100px;
-}

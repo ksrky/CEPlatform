@@ -1,12 +1,4 @@
-// export class Input {
-//     public algorithm: string
-//     public hyperparameters: any
-//
-//     constructor() {
-//         this.algorithm = null
-//         this.hyperparameters = {}
-//     }
-// }
+export let configChanged: boolean = false
 
 export type Config = {
     track_id: string

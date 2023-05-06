@@ -1,32 +1,38 @@
+import { limit } from '../utils'
+
 /**
  * Parameter
  */
 export class Parameter {
-    public value: number
-    private _minValue: number
-    private _maxValue: number
+    private _value: number
+    public min: number
+    public max: number
 
     /**
      * Parameter
      * @param value
-     * @param minValue
-     * @param maxValue
+     * @param minVal
+     * @param maxVal
      */
-    constructor(minValue: number, maxValue: number, value: number) {
-        this._minValue = minValue
-        this._maxValue = maxValue
-        this.setValue(value)
+    constructor(minVal: number, maxVal: number, value: number) {
+        this.min = minVal
+        this.max = maxVal
+        this.value = value
     }
 
-    public setValue(value: number): void {
-        this.value = Math.max(this._minValue, Math.min(this._maxValue, value))
+    get value(): number {
+        return this._value
+    }
+
+    set value(value: number) {
+        this._value = limit(value, this.min, this.max)
     }
 
     public setMinValue(): void {
-        this.value = this._minValue
+        this.value = this.min
     }
 
     public setMaxValue(): void {
-        this.value = this._maxValue
+        this.value = this.max
     }
 }

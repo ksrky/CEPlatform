@@ -10,8 +10,8 @@ import '@babylonjs/core/Loading/loadingScreen'
 import { AdvancedDynamicTexture } from '@babylonjs/gui/2D/advancedDynamicTexture'
 
 // Debug imports
-import '@babylonjs/core/Debug/debugLayer'
-import '@babylonjs/inspector'
+// import '@babylonjs/core/Debug/debugLayer'
+// import '@babylonjs/inspector'
 
 // Local imports
 import { Simulation } from './simulation'
@@ -47,7 +47,7 @@ class App {
         this._config = defaultConfig
 
         // hide/show the Inspector
-        window.addEventListener('keydown', (ev) => {
+        /*window.addEventListener('keydown', (ev) => {
             // Shift+Ctrl+Alt+I
             if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.key === 'I') {
                 if (this._scene.debugLayer.isVisible()) {
@@ -56,15 +56,7 @@ class App {
                     this._scene.debugLayer.show()
                 }
             }
-            // Shift+Ctrl+Alt+J
-            if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.key === 'C') {
-                if (document.getElementById('config').style.display == 'none') {
-                    document.getElementById('config').style.display = 'block'
-                } else {
-                    document.getElementById('config').style.display = 'none'
-                }
-            }
-        })
+        })*/
 
         // run the main render loop
         this._main()
@@ -121,18 +113,12 @@ class App {
         playMenu.idealHeight = 720 // fit our fullscreen ui to this height
 
         const playBtn = playMenu.getControlByName('playBtn')
-        const howtoBtn = playMenu.getControlByName('howtoBtn')
 
         // this handles interactions with the start button attached to the scene
         playBtn.onPointerDownObservable.add(() => {
             this._goToGame()
             scene.detachControl() // observables disabled
         })
-
-        /*howtoBtn.onPointerDownObservable.add(() => {
-            this.gotoHowto()
-            scene.detachControl()
-        })*/
 
         //--SCENE FINISHED LOADING--
         await scene.whenReadyAsync()
@@ -148,9 +134,6 @@ class App {
     private async _setUpGame() {
         const scene = new Scene(this._engine)
         this._gamescene = scene
-
-        // const camera = new ArcRotateCamera('camera1', 0, 0, 0, new Vector3(0, 0, 0), scene)
-        // camera.setPosition(new Vector3(-12, 25, -84))
 
         new HemisphericLight('light1', new Vector3(1, 0.5, 0), scene)
 
@@ -170,11 +153,11 @@ class App {
         this._simulation.registerAnimation()
 
         //--WHEN SCENE FINISHED LOADING--
-        //get rid of start scene, switch to gamescene and change states
+        // get rid of start scene, switch to gamescene and change states
         this._scene.dispose()
         this._scene = scene
         this._state = State.GAME
-        //the game is ready, attach control back
+        // the game is ready, attach control back
         this._scene.attachControl()
     }
 }

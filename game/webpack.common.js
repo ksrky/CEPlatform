@@ -15,7 +15,7 @@ module.exports = {
             ],
         },
         babylonjs_gui: {
-            import: '@babylonjs/gui/2D/controls',
+            import: ['@babylonjs/gui/2D/controls', '@babylonjs/gui/2D/advancedDynamicTexture'],
             dependOn: ['babylonjs_base', 'babylonjs_basic', 'babylonjs_mesh'],
         },
         babylonjs_camera: {
