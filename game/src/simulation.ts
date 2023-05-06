@@ -6,6 +6,7 @@ import { Track } from './view/track'
 import { Path } from './control/path'
 import { Control } from './control'
 import { Pos } from './position'
+import { Config } from './config'
 
 export class Simulation {
     private _scene: Scene
@@ -23,22 +24,27 @@ export class Simulation {
     private _path: Path
     private _control: Control
 
-    constructor(scene: Scene) {
+    private _config: Config
+    private _configChanged: boolean
+
+    constructor(scene: Scene, config: Config, configChanged: boolean) {
         this._scene = scene
         this._nPoints = 200
         this._dt = Simulation.SIMULATION_DELTA_TIME * 1
+        this.time = 0
+
+        this._config = config
+        this._configChanged = configChanged
     }
 
     public async init(): Promise<void> {
-        this.time = 0
-
         this._track = new Track(this._scene, this._nPoints, Simulation.INITIAL_VEHICLE_POSITION)
 
-        this.vehicle = new Vehicle(this._scene, 12)
+        this.vehicle = new Vehicle(this._scene, this._config)
         this.vehicle.root.position = Simulation.INITIAL_VEHICLE_POSITION
         this.vehicle.root.rotation.y = this._track.getStartPose()
 
-        this._control = new Control(this._dt)
+        this._control = new Control(this._config)
     }
 
     private _feedback(): void {
@@ -52,11 +58,16 @@ export class Simulation {
 
     public registerAnimation(): void {
         this._scene.registerAfterRender(() => {
+            if (this._configChanged) {
+                console.log(this._config)
+                this.init()
+                this._configChanged = false
+            }
             this._feedback()
             const [delta, acc] = this._control.calculate(this._path)
+            this.vehicle.rotateWheels(this.vehicle.root.rotation.y)
             // Rotation around the Y-axis of the left-hand coordinate system is counterclockwise
             this.vehicle.update(acc, -delta, this._dt)
-            this.vehicle.rotateWheels(this.vehicle.root.rotation.y)
             this.vehicle.updateCamera()
 
             this.time += Simulation.SIMULATION_DELTA_TIME

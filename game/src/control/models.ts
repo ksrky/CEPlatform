@@ -18,9 +18,7 @@ export interface Controller {
         dt: number
     ): { steer: number; acc: number }
 }
-/**
- * Pure pursuit controller.
- */
+/** Pure pursuit controller */
 export class PurePursuit implements Controller {
     private _Kdd: number
     private _minLA: number
@@ -35,11 +33,11 @@ export class PurePursuit implements Controller {
      * @param targetSpeed Target vehicle speed
      * @param steerRange Steering angle range
      */
-    constructor(Kdd = 0.5, minLA = 3, maxLA = 10, targetSpeed = 12) {
-        this._Kdd = Kdd
-        this._minLA = minLA
-        this._maxLA = maxLA
-        this._targetSpeed = targetSpeed
+    constructor(params: any) {
+        this._Kdd = params.Kdd
+        this._minLA = params.minLA
+        this._maxLA = params.maxLA
+        this._targetSpeed = params.targetSpeed
     }
 
     private _calcIntersection(

@@ -13,11 +13,11 @@ export class Vehicle {
     public wheelBase: number
     public mass: number
 
-    constructor() {
+    constructor(config: { wheel_base: number; mass: number }) {
         this.pos = new Pos(0, 0)
         this.heading = 0
         this.velocity = 0
-        this.wheelBase = 2
-        this.mass = 100
+        this.wheelBase = config.wheel_base
+        this.mass = config.mass
     }
 }

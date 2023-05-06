@@ -17,7 +17,7 @@ export class HUD {
     public gamePaused: boolean
 
     //UI Elements
-    public pauseBtn: Control // Button
+    private _pauseBtn: Control // Button
     private _mainUI: AdvancedDynamicTexture
     private _pauseMenu: Control // Rectangle
 
@@ -28,12 +28,20 @@ export class HUD {
     private _applyBtn: Button
 
     private _selectedAlg: number
+    private _changedParams: { [key: string]: number }
+    private _config: Config
+    private _configChanged: boolean
 
     private static readonly MAX_ALGORITHM_CHOICES = 4
     private static readonly MAX_PARAMETER_CHOICES = 5
 
-    constructor() {
+    constructor(config: Config, configChanged: boolean) {
         this._createMainUI()
+
+        this._selectedAlg = algorithmChoices.findIndex((val) => val.id == config.algorithm.id)
+        this._changedParams = config.algorithm.params
+        this._config = config
+        this._configChanged = configChanged
     }
 
     private async _createMainUI(): Promise<void> {
@@ -48,11 +56,11 @@ export class HUD {
         this._pauseMenu = pauseMenu
 
         const pauseBtn = this._mainUI.getControlByName('PauseBtn')
-        this.pauseBtn = pauseBtn
+        this._pauseBtn = pauseBtn
         pauseBtn.onPointerDownObservable.add(() => {
             this._pauseMenu.isVisible = true
             mainUI.addControl(this._pauseMenu)
-            this.pauseBtn.isHitTestVisible = false
+            this._pauseBtn.isHitTestVisible = false
 
             this.gamePaused = true
         })
@@ -60,7 +68,7 @@ export class HUD {
         const resumeBtn = this._mainUI.getControlByName('ResumeBtn')
         resumeBtn.onPointerDownObservable.add(() => {
             this._pauseMenu.isVisible = false
-            this.pauseBtn.isHitTestVisible = true
+            this._pauseBtn.isHitTestVisible = true
 
             this.gamePaused = false
         })
@@ -68,7 +76,7 @@ export class HUD {
         const exitBtn = this._mainUI.getControlByName('ExitBtn')
         exitBtn.onPointerDownObservable.add(() => {
             this._pauseMenu.isVisible = false
-            this.pauseBtn.isHitTestVisible = true
+            this._pauseBtn.isHitTestVisible = true
 
             this.gamePaused = false
         })
@@ -89,9 +97,13 @@ export class HUD {
         this._prevBtn.onPointerClickObservable.add(() => {
             this._selectAlgorithm()
         })
-        this._applyBtn.onPointerClickObservable.add(() => {})
-
-        this._selectedAlg = 0 // tmp: read from config
+        this._applyBtn.onPointerClickObservable.add(() => {
+            this._configChanged = true
+            this._config.algorithm.id = algorithmChoices[this._selectedAlg].id
+            this._config.algorithm.params = this._changedParams
+            console.log(this._config)
+            this._selectAlgorithm()
+        })
 
         this._selectAlgorithm()
     }
@@ -147,10 +159,14 @@ export class HUD {
         this._applyBtn.isVisible = true
         this._applyBtn.isHitTestVisible = true
 
+        this._changedParams = this._config.algorithm.params
+
         const params = algorithmChoices[this._selectedAlg].params
         for (let i = 0; i < HUD.MAX_PARAMETER_CHOICES; i++) {
             const grid: Control = this._mainUI.getControlByName('Parameter' + (i + 1))
             if (params.length > i) {
+                const currentVal = this._config.algorithm.params[params[i].id] // params[i].param.value
+
                 const nameText = grid.getDescendants(
                     true,
                     (ctr) => ctr.name == 'Name'
@@ -166,16 +182,17 @@ export class HUD {
                 const slider = grid.getDescendants(true, (ctr) => ctr.name == 'Slider')[0] as Slider
                 slider.minimum = params[i].param.min
                 slider.maximum = params[i].param.max
-                slider.value = params[i].param.value
+                slider.value = currentVal
                 slider.step = (params[i].param.max - params[i].param.min) / 100
 
                 const inputBox = grid.getDescendants(
                     true,
                     (ctr) => ctr.name == 'InputText'
                 )[0] as InputText
-                inputBox.text = String(params[i].param.value)
+                inputBox.text = String(currentVal)
 
-                slider.onValueChangedObservable.add(function (val: number) {
+                slider.onValueChangedObservable.add((val: number) => {
+                    this._changedParams[params[i].id] = val
                     inputBox.text = String(val)
                 })
                 inputBox.onBeforeKeyAddObservable.add((input: InputText) => {
@@ -185,7 +202,7 @@ export class HUD {
                     }
                 })
                 inputBox.onBlurObservable.add((input: InputText) => {
-                    if (input.text == '') input.text = String(params[i].param.value)
+                    if (input.text == '') input.text = String(currentVal)
                     const val = limit(Number(input.text), params[i].param.min, params[i].param.max)
                     input.text = String(val)
                     slider.value = val
