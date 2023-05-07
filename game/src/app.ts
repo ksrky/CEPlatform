@@ -105,15 +105,18 @@ class App {
 
         // create a fullscreen ui for all of our GUI elements
         const playMenu = AdvancedDynamicTexture.CreateFullscreenUI('PlayMenu')
-        await playMenu.parseFromSnippetAsync('294QF7#1')
+        await playMenu.parseFromSnippetAsync('294QF7#3')
         playMenu.idealHeight = 720 // fit our fullscreen ui to this height
 
         const playBtn = playMenu.getControlByName('playBtn')
-
-        // this handles interactions with the start button attached to the scene
         playBtn.onPointerDownObservable.add(() => {
             this._goToGame()
             scene.detachControl() // observables disabled
+        })
+
+        const githubLink = playMenu.getControlByName('GithubLink')
+        githubLink.onPointerClickObservable.add(() => {
+            window.open('https://github.com/ksrky/CEPlatform/tree/master/game', '_blank')
         })
 
         //--SCENE FINISHED LOADING--
@@ -136,7 +139,7 @@ class App {
         this._simulation = new Simulation(scene, this._config)
         await this._simulation.init()
 
-        this._gameUI = new GameUI(this._config)
+        this._gameUI = new GameUI(this._config, this._simulation)
 
         window.addEventListener('keydown', (ev) => {
             if (ev.key === ' ') {

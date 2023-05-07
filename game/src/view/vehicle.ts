@@ -46,7 +46,6 @@ export class Vehicle {
         this.root = new TransformNode('vehicle-root', scene)
         this.root.position = pos
         this.root.rotation.y = rotY
-        console.log(pos, this.root.position)
 
         this._makeBody()
         this._attachWheels()
