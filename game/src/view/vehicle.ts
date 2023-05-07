@@ -7,6 +7,7 @@ import { StandardMaterial } from '@babylonjs/core/Materials/standardMaterial'
 import { Texture } from '@babylonjs/core/Materials/Textures/texture'
 import { TransformNode } from '@babylonjs/core/Meshes/transformNode'
 import { UniversalCamera } from '@babylonjs/core/Cameras/universalCamera'
+import { Config } from '../config'
 
 /**
  * Vehicle model
@@ -37,12 +38,16 @@ export class Vehicle {
     public velocity: number
     public wheelBase: number
 
-    constructor(scene: Scene, velocity = 10, wheelBase = 2) {
+    constructor(scene: Scene, config: Config, pos: Vector3, rotY: number) {
         this._scene = scene
-        this.velocity = velocity
-        this.wheelBase = wheelBase
+        this.velocity = config.vehicle.initial_speed
+        this.wheelBase = config.vehicle.wheel_base
 
         this.root = new TransformNode('vehicle-root', scene)
+        this.root.position = pos
+        this.root.rotation.y = rotY
+        console.log(pos, this.root.position)
+
         this._makeBody()
         this._attachWheels()
         this._setupCamera()

@@ -8,15 +8,15 @@ import '@babylonjs/core/Loading/loadingScreen'
 
 // GUI imports
 import { AdvancedDynamicTexture } from '@babylonjs/gui/2D/advancedDynamicTexture'
-import { Button } from '@babylonjs/gui/2D/controls/button'
-import { Control } from '@babylonjs/gui/2D/controls/control'
 
 // Debug imports
-import '@babylonjs/core/Debug/debugLayer'
+// import '@babylonjs/core/Debug/debugLayer'
+// import '@babylonjs/inspector'
 
 // Local imports
 import { Simulation } from './simulation'
-import { HUD } from './view/ui'
+import { GameUI } from './ui'
+import { Config } from './config'
 
 enum State {
     START = 0,
@@ -28,7 +28,9 @@ class App {
     private _engine: Engine
     private _scene: Scene
 
-    private _ui: HUD
+    private _config: Config
+
+    private _gameUI: GameUI
 
     private _state = 0
     private _gamescene: Scene
@@ -43,17 +45,19 @@ class App {
         this._engine = new Engine(this._canvas, true)
         this._scene = new Scene(this._engine)
 
+        this._config = new Config()
+
         // hide/show the Inspector
-        window.addEventListener('keydown', (ev) => {
+        /*window.addEventListener('keydown', (ev) => {
             // Shift+Ctrl+Alt+I
-            if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.key === 'i') {
+            if (ev.shiftKey && ev.ctrlKey && ev.altKey && ev.key === 'I') {
                 if (this._scene.debugLayer.isVisible()) {
                     this._scene.debugLayer.hide()
                 } else {
                     this._scene.debugLayer.show()
                 }
             }
-        })
+        })*/
 
         // run the main render loop
         this._main()
@@ -64,7 +68,7 @@ class App {
         canvas.style.width = '100%'
         canvas.style.height = '100%'
         canvas.id = 'gameCanvas'
-        document.body.appendChild(canvas)
+        document.getElementById('main').appendChild(canvas)
 
         return canvas
     }
@@ -76,8 +80,10 @@ class App {
             switch (this._state) {
                 case State.START:
                     this._scene.render()
+                    break
                 case State.GAME:
                     this._scene.render()
+                    break
                 default:
                     break
             }
@@ -98,21 +104,14 @@ class App {
         camera.setTarget(Vector3.Zero())
 
         // create a fullscreen ui for all of our GUI elements
-        const guiMenu = AdvancedDynamicTexture.CreateFullscreenUI('UI')
-        guiMenu.idealHeight = 720 // fit our fullscreen ui to this height
+        const playMenu = AdvancedDynamicTexture.CreateFullscreenUI('PlayMenu')
+        await playMenu.parseFromSnippetAsync('294QF7#1')
+        playMenu.idealHeight = 720 // fit our fullscreen ui to this height
 
-        // create a simple button
-        const startBtn = Button.CreateSimpleButton('start', 'PLAY')
-        startBtn.width = 0.2
-        startBtn.height = '80px'
-        startBtn.color = 'white'
-        startBtn.top = '-14px'
-        startBtn.thickness = 0
-        startBtn.verticalAlignment = Control.VERTICAL_ALIGNMENT_CENTER
-        guiMenu.addControl(startBtn)
+        const playBtn = playMenu.getControlByName('playBtn')
 
         // this handles interactions with the start button attached to the scene
-        startBtn.onPointerDownObservable.add(() => {
+        playBtn.onPointerDownObservable.add(() => {
             this._goToGame()
             scene.detachControl() // observables disabled
         })
@@ -132,14 +131,18 @@ class App {
         const scene = new Scene(this._engine)
         this._gamescene = scene
 
-        // const camera = new ArcRotateCamera('camera1', 0, 0, 0, new Vector3(0, 0, 0), scene)
-        // camera.setPosition(new Vector3(-12, 25, -84))
-
         new HemisphericLight('light1', new Vector3(1, 0.5, 0), scene)
 
-        this._simulation = new Simulation(scene)
+        this._simulation = new Simulation(scene, this._config)
         await this._simulation.init()
-        this._simulation.vehicle.camera.attachControl(this._canvas, true)
+
+        this._gameUI = new GameUI(this._config)
+
+        window.addEventListener('keydown', (ev) => {
+            if (ev.key === ' ') {
+                this._simulation.stop = !this._simulation.stop
+            }
+        })
     }
 
     private async _goToGame() {
@@ -147,17 +150,14 @@ class App {
         this._scene.detachControl()
         const scene = this._gamescene
 
-        this._ui = new HUD()
-        // await this._ui.createSample()
-
         this._simulation.registerAnimation()
 
         //--WHEN SCENE FINISHED LOADING--
-        //get rid of start scene, switch to gamescene and change states
+        // get rid of start scene, switch to gamescene and change states
         this._scene.dispose()
         this._scene = scene
         this._state = State.GAME
-        //the game is ready, attach control back
+        // the game is ready, attach control back
         this._scene.attachControl()
     }
 }
