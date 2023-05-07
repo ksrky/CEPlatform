@@ -57,8 +57,8 @@ export class Track {
     }
 
     private _makeTrack(): void {
-        const track = MeshBuilder.CreateLines('track', { points: this.points }, this._scene)
-        track.color = new Color3(0, 0, 0)
+        const line = MeshBuilder.CreateLines('track', { points: this.points }, this._scene)
+        line.color = new Color3(0, 0, 0)
     }
 
     public getStartPose(): number {

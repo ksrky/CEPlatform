@@ -18,10 +18,11 @@ export class Simulation {
 
     public vehicle: Vehicle
     private _track: Track
-    private _nPoints: number
     private _dt: number
-    public static readonly INITIAL_VEHICLE_POSITION: Vector3 = new Vector3(50, 0, 0)
-    public static readonly INITIAL_VEHICLE_TILT: Vector3 = new Vector3(0, Math.PI / 2, 0)
+    private static get INITIAL_VEHICLE_POSITION(): Vector3 {
+        return new Vector3(50, 0, 0)
+    }
+    // private static readonly INITIAL_VEHICLE_TILT: Vector3 = new Vector3(0, Math.PI / 2, 0)
 
     private _path: Path
     private _control: Control
@@ -30,7 +31,6 @@ export class Simulation {
 
     constructor(scene: Scene, config: Config) {
         this._scene = scene
-        this._nPoints = 200
         this._dt = Simulation.SIMULATION_DELTA_TIME * 1
         this.time = 0
         this.stop = true
@@ -40,17 +40,39 @@ export class Simulation {
     }
 
     public async init(): Promise<void> {
-        this._track = new Track(this._scene, this._nPoints, Simulation.INITIAL_VEHICLE_POSITION)
+        this._track = new Track(this._scene, 200, Simulation.INITIAL_VEHICLE_POSITION)
 
-        this.vehicle = new Vehicle(this._scene, this._config)
-        this.vehicle.root.position = Simulation.INITIAL_VEHICLE_POSITION
-        this.vehicle.root.rotation.y = this._track.getStartPose()
+        this.vehicle = new Vehicle(
+            this._scene,
+            this._config,
+            Simulation.INITIAL_VEHICLE_POSITION,
+            this._track.getStartPose()
+        )
+        console.log(Simulation.INITIAL_VEHICLE_POSITION)
+        console.log(this.vehicle.root.position)
+        this.vehicle.camera.attachControl(this._scene, true)
 
         this._control = new Control(this._config)
     }
 
-    public async reinit(): Promise<void> {
-        this.vehicle
+    private _restart(): void {
+        this.time = 0
+        this.stop = true
+        this._numLoop = 0
+
+        this.vehicle.root.dispose()
+
+        this.vehicle = new Vehicle(
+            this._scene,
+            this._config,
+            Simulation.INITIAL_VEHICLE_POSITION,
+            this._track.getStartPose()
+        )
+        console.log(Simulation.INITIAL_VEHICLE_POSITION)
+        console.log(this.vehicle.root.position)
+        this.vehicle.camera.attachControl(this._scene, true)
+
+        this._control = new Control(this._config)
     }
 
     private _feedback(): void {
@@ -64,6 +86,13 @@ export class Simulation {
 
     public registerAnimation(): void {
         this._scene.registerAfterRender(() => {
+            if (this._config.changed) {
+                this._restart()
+                this._config.changed = false
+            } else {
+                this.vehicle.updateCamera()
+            }
+
             if (!this.stop) {
                 this._feedback()
                 const [delta, acc] = this._control.calculate(this._path)
@@ -73,7 +102,6 @@ export class Simulation {
 
                 this.time += Simulation.SIMULATION_DELTA_TIME
             }
-            this.vehicle.updateCamera()
         })
     }
 }

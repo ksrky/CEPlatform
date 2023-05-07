@@ -38,12 +38,16 @@ export class Vehicle {
     public velocity: number
     public wheelBase: number
 
-    constructor(scene: Scene, config: Config) {
+    constructor(scene: Scene, config: Config, pos: Vector3, rotY: number) {
         this._scene = scene
         this.velocity = config.vehicle.initial_speed
         this.wheelBase = config.vehicle.wheel_base
 
         this.root = new TransformNode('vehicle-root', scene)
+        this.root.position = pos
+        this.root.rotation.y = rotY
+        console.log(pos, this.root.position)
+
         this._makeBody()
         this._attachWheels()
         this._setupCamera()

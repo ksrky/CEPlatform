@@ -16,7 +16,7 @@ export class Pos {
     }
 
     /**
-     * normalize vector
+     * L2 norm of the vector
      */
     public norm(): number {
         return Math.sqrt(this.x * this.x + this.y + this.y)

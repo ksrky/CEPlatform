@@ -135,7 +135,6 @@ class App {
 
         this._simulation = new Simulation(scene, this._config)
         await this._simulation.init()
-        this._simulation.vehicle.camera.attachControl(this._canvas, true)
 
         this._gameUI = new GameUI(this._config)
 
