@@ -58,18 +58,22 @@ export const algorithmChoices: {
 }[] = [
     {
         id: 'Pure pursuit',
-        discription: 'Only the steering angle is controlled and the velocity is constant.',
+        discription: 'Controls only steering angle, constant speed.',
         params: [
-            { id: 'Kdd', param: new Parameter(0, 3, 0.5), discription: '' },
+            {
+                id: 'Kdd',
+                param: new Parameter(0, 3, 0.5),
+                discription: 'Product of Kdd and speed is the look-ahead distance',
+            },
             {
                 id: 'minLA',
                 param: new Parameter(1, 5, 3),
-                discription: 'Minimum look ahead distance',
+                discription: 'Minimum look-ahead distance',
             },
             {
                 id: 'maxLA',
                 param: new Parameter(5, 20, 10),
-                discription: 'Maximum look ahead distance',
+                discription: 'Maximum look-ahead distance',
             },
             {
                 id: 'targetSpeed',

@@ -11,6 +11,7 @@ import { InputText } from '@babylonjs/gui/2D/controls/inputText'
 import { algorithmChoices } from './control'
 import { limit } from './utils'
 import { Config } from './config'
+import { Simulation } from './simulation'
 
 export class GameUI {
     //Pause toggle
@@ -31,20 +32,23 @@ export class GameUI {
     private _changedParams: { [key: string]: number }
     private _config: Config
 
+    private _simulation: Simulation
+
     private static readonly MAX_ALGORITHM_CHOICES = 4
     private static readonly MAX_PARAMETER_CHOICES = 5
 
-    constructor(config: Config) {
+    constructor(config: Config, simulation: Simulation) {
         this._createMainUI()
 
         this._selectedAlg = algorithmChoices.findIndex((val) => val.id == config.algorithm.id)
         this._changedParams = config.algorithm.params
         this._config = config
+        this._simulation = simulation
     }
 
     private async _createMainUI(): Promise<void> {
         const mainUI = AdvancedDynamicTexture.CreateFullscreenUI('UI')
-        await mainUI.parseFromSnippetAsync('T7EKW8#17')
+        await mainUI.parseFromSnippetAsync('T7EKW8#21')
         this._mainUI = mainUI
         this._mainUI.idealHeight = 720
 
@@ -209,4 +213,19 @@ export class GameUI {
             }
         }
     }
+
+    /*public updateInformation() {
+        console.log(this._simulation.time)
+        const infoWindow = this._mainUI.getControlByName('InfoWindow')
+        const timeText = infoWindow.getDescendants(
+            true,
+            (ctr) => ctr.name == 'Time'
+        )[0] as TextBlock
+        timeText.text = String(this._simulation.time)
+        const speedText = infoWindow.getDescendants(
+            true,
+            (ctr) => ctr.name == 'Speed'
+        )[0] as TextBlock
+        speedText.text = String(this._simulation.vehicle.velocity)
+    }*/
 }

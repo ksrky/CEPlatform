@@ -48,8 +48,6 @@ export class Simulation {
             Simulation.INITIAL_VEHICLE_POSITION,
             this._track.getStartPose()
         )
-        console.log(Simulation.INITIAL_VEHICLE_POSITION)
-        console.log(this.vehicle.root.position)
         this.vehicle.camera.attachControl(this._scene, true)
 
         this._control = new Control(this._config)
@@ -68,8 +66,6 @@ export class Simulation {
             Simulation.INITIAL_VEHICLE_POSITION,
             this._track.getStartPose()
         )
-        console.log(Simulation.INITIAL_VEHICLE_POSITION)
-        console.log(this.vehicle.root.position)
         this.vehicle.camera.attachControl(this._scene, true)
 
         this._control = new Control(this._config)
