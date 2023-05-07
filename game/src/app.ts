@@ -15,13 +15,12 @@ import { AdvancedDynamicTexture } from '@babylonjs/gui/2D/advancedDynamicTexture
 
 // Local imports
 import { Simulation } from './simulation'
-import { HUD } from './view/ui'
-import { Config, defaultConfig } from './config'
+import { GameUI } from './ui'
+import { Config } from './config'
 
 enum State {
     START = 0,
     GAME = 1,
-    HOWTO = 2,
 }
 
 class App {
@@ -30,9 +29,8 @@ class App {
     private _scene: Scene
 
     private _config: Config
-    private _configChanged: boolean
 
-    private _ui: HUD
+    private _gameUI: GameUI
 
     private _state = 0
     private _gamescene: Scene
@@ -47,8 +45,7 @@ class App {
         this._engine = new Engine(this._canvas, true)
         this._scene = new Scene(this._engine)
 
-        this._config = defaultConfig
-        this._configChanged = false
+        this._config = new Config()
 
         // hide/show the Inspector
         /*window.addEventListener('keydown', (ev) => {
@@ -85,9 +82,6 @@ class App {
                     this._scene.render()
                     break
                 case State.GAME:
-                    this._scene.render()
-                    break
-                case State.HOWTO:
                     this._scene.render()
                     break
                 default:
@@ -139,11 +133,17 @@ class App {
 
         new HemisphericLight('light1', new Vector3(1, 0.5, 0), scene)
 
-        this._simulation = new Simulation(scene, this._config, this._configChanged)
+        this._simulation = new Simulation(scene, this._config)
         await this._simulation.init()
         this._simulation.vehicle.camera.attachControl(this._canvas, true)
 
-        this._ui = new HUD(this._config, this._configChanged)
+        this._gameUI = new GameUI(this._config)
+
+        window.addEventListener('keydown', (ev) => {
+            if (ev.key === ' ') {
+                this._simulation.stop = !this._simulation.stop
+            }
+        })
     }
 
     private async _goToGame() {

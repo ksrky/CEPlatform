@@ -35,7 +35,6 @@ export class Control {
         const angVel = (this.vehicle.velocity * Math.tan(steer)) / this.vehicle.wheelBase
         this.vehicle.heading = this.vehicle.heading + angVel * this._dt
         this.vehicle.velocity += acc * this._dt
-        console.log(this.vehicle.velocity)
     }
 
     public calculate(path: Path): [number, number] {

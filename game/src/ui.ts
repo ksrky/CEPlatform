@@ -8,11 +8,11 @@ import { Button } from '@babylonjs/gui/2D/controls/button'
 import { Slider } from '@babylonjs/gui/2D/controls/sliders/slider'
 import { InputText } from '@babylonjs/gui/2D/controls/inputText'
 
-import { algorithmChoices } from '../control'
-import { limit } from '../utils'
-import { Config } from '../config'
+import { algorithmChoices } from './control'
+import { limit } from './utils'
+import { Config } from './config'
 
-export class HUD {
+export class GameUI {
     //Pause toggle
     public gamePaused: boolean
 
@@ -30,18 +30,16 @@ export class HUD {
     private _selectedAlg: number
     private _changedParams: { [key: string]: number }
     private _config: Config
-    private _configChanged: boolean
 
     private static readonly MAX_ALGORITHM_CHOICES = 4
     private static readonly MAX_PARAMETER_CHOICES = 5
 
-    constructor(config: Config, configChanged: boolean) {
+    constructor(config: Config) {
         this._createMainUI()
 
         this._selectedAlg = algorithmChoices.findIndex((val) => val.id == config.algorithm.id)
         this._changedParams = config.algorithm.params
         this._config = config
-        this._configChanged = configChanged
     }
 
     private async _createMainUI(): Promise<void> {
@@ -98,10 +96,9 @@ export class HUD {
             this._selectAlgorithm()
         })
         this._applyBtn.onPointerClickObservable.add(() => {
-            this._configChanged = true
+            this._config.changed = true
             this._config.algorithm.id = algorithmChoices[this._selectedAlg].id
             this._config.algorithm.params = this._changedParams
-            console.log(this._config)
             this._selectAlgorithm()
         })
 
@@ -119,7 +116,7 @@ export class HUD {
         this._applyBtn.isVisible = false
         this._applyBtn.isHitTestVisible = false
 
-        for (let i = 0; i < HUD.MAX_ALGORITHM_CHOICES; i++) {
+        for (let i = 0; i < GameUI.MAX_ALGORITHM_CHOICES; i++) {
             const grid: Control = this._mainUI.getControlByName('Algorithm' + (i + 1))
             if (algorithmChoices.length > i) {
                 const { id, discription } = algorithmChoices[i]
@@ -162,7 +159,7 @@ export class HUD {
         this._changedParams = this._config.algorithm.params
 
         const params = algorithmChoices[this._selectedAlg].params
-        for (let i = 0; i < HUD.MAX_PARAMETER_CHOICES; i++) {
+        for (let i = 0; i < GameUI.MAX_PARAMETER_CHOICES; i++) {
             const grid: Control = this._mainUI.getControlByName('Parameter' + (i + 1))
             if (params.length > i) {
                 const currentVal = this._config.algorithm.params[params[i].id] // params[i].param.value

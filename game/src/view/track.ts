@@ -7,8 +7,12 @@ import { GrassProceduralTexture } from '@babylonjs/procedural-textures/grass/ind
 export class Track {
     private _scene: Scene
 
-    public points: Vector3[] 
+    public points: Vector3[]
     private static readonly GROUND_SIZE = 500
+    public length: number
+
+    private _path3d: Path3D
+    // private _colisionMesh: Mesh
 
     constructor(scene: Scene, nPoints: number, startPos: Vector3) {
         this._scene = scene
@@ -16,9 +20,12 @@ export class Track {
         this._generatePath(nPoints, startPos)
         this._makeGround()
         this._makeTrack()
+
+        this._path3d = new Path3D(this.points)
+        this.length = this._path3d.length()
     }
 
-    private _generatePath(n: number, offset: Vector3): void { 
+    private _generatePath(n: number, offset: Vector3): void {
         this.points = []
         const r = 50
         for (let i = 0; i < n + 1; i++) {
@@ -55,8 +62,7 @@ export class Track {
     }
 
     public getStartPose(): number {
-        const path3d = new Path3D(this.points)
-        const { x, z } = path3d.getTangentAt(0)
+        const { x, z } = this._path3d.getTangentAt(0)
         return -Math.atan2(z, x)
     }
 }

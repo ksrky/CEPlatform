@@ -13,6 +13,8 @@ export class Simulation {
 
     public time: number
     private static readonly SIMULATION_DELTA_TIME = 0.05
+    public stop: boolean
+    private _numLoop: number
 
     public vehicle: Vehicle
     private _track: Track
@@ -25,16 +27,16 @@ export class Simulation {
     private _control: Control
 
     private _config: Config
-    private _configChanged: boolean
 
-    constructor(scene: Scene, config: Config, configChanged: boolean) {
+    constructor(scene: Scene, config: Config) {
         this._scene = scene
         this._nPoints = 200
         this._dt = Simulation.SIMULATION_DELTA_TIME * 1
         this.time = 0
+        this.stop = true
+        this._numLoop = 0
 
         this._config = config
-        this._configChanged = configChanged
     }
 
     public async init(): Promise<void> {
@@ -45,6 +47,10 @@ export class Simulation {
         this.vehicle.root.rotation.y = this._track.getStartPose()
 
         this._control = new Control(this._config)
+    }
+
+    public async reinit(): Promise<void> {
+        this.vehicle
     }
 
     private _feedback(): void {
@@ -58,19 +64,16 @@ export class Simulation {
 
     public registerAnimation(): void {
         this._scene.registerAfterRender(() => {
-            if (this._configChanged) {
-                console.log(this._config)
-                this.init()
-                this._configChanged = false
-            }
-            this._feedback()
-            const [delta, acc] = this._control.calculate(this._path)
-            this.vehicle.rotateWheels(this.vehicle.root.rotation.y)
-            // Rotation around the Y-axis of the left-hand coordinate system is counterclockwise
-            this.vehicle.update(acc, -delta, this._dt)
-            this.vehicle.updateCamera()
+            if (!this.stop) {
+                this._feedback()
+                const [delta, acc] = this._control.calculate(this._path)
+                this.vehicle.rotateWheels(this.vehicle.root.rotation.y)
+                // Rotation around the Y-axis of the left-hand coordinate system is counterclockwise
+                this.vehicle.update(acc, -delta, this._dt)
 
-            this.time += Simulation.SIMULATION_DELTA_TIME
+                this.time += Simulation.SIMULATION_DELTA_TIME
+            }
+            this.vehicle.updateCamera()
         })
     }
 }
